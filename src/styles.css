@@ -1,3 +1,276 @@
-/* You can add global styles to this file, and also import other style files */
+/* Zenith Executive Design System */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Manrope:wght@200..800&display=swap');
+@import "tailwindcss";
 
-@import 'tailwindcss';
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-manrope: 'Manrope', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'Manrope', system-ui, sans-serif;
+  --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+
+  /* Colors */
+  --color-surface: #fbf8ff;
+  --color-surface-dim: #dad9e3;
+  --color-surface-bright: #fbf8ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f4f2fd;
+  --color-surface-container: #eeedf7;
+  --color-surface-container-high: #e8e7f1;
+  --color-surface-container-highest: #e3e1ec;
+  --color-on-surface: #1a1b22;
+  --color-on-surface-variant: #5c403b;
+  --color-inverse-surface: #2f3038;
+  --color-inverse-on-surface: #f1effa;
+  --color-outline: #916f6a;
+  --color-outline-variant: #e6bdb7;
+  --color-surface-tint: #be0f07;
+
+  --color-primary: #870000;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #b30000;
+  --color-on-primary-container: #ffbeb4;
+  --color-inverse-primary: #ffb4a8;
+
+  --color-secondary: #5f5e5f;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #e2dfe0;
+  --color-on-secondary-container: #636263;
+
+  --color-tertiary: #3f4142;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #565859;
+  --color-on-tertiary-container: #cececf;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-primary-fixed: #ffdad4;
+  --color-primary-fixed-dim: #ffb4a8;
+  --color-on-primary-fixed: #410000;
+  --color-on-primary-fixed-variant: #930000;
+
+  --color-secondary-fixed: #e5e2e3;
+  --color-secondary-fixed-dim: #c8c6c7;
+  --color-on-secondary-fixed: #1b1b1c;
+  --color-on-secondary-fixed-variant: #474647;
+
+  --color-tertiary-fixed: #e2e2e3;
+  --color-tertiary-fixed-dim: #c6c6c7;
+  --color-on-tertiary-fixed: #1a1c1d;
+  --color-on-tertiary-fixed-variant: #454748;
+
+  --color-background: #fbf8ff;
+  --color-on-background: #1a1b22;
+  --color-surface-variant: #e3e1ec;
+
+  /* Border Radius Tokens */
+  --radius-sm: 0.25rem;
+  --radius-DEFAULT: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Spacing Tokens */
+  --spacing-base: 8px;
+  --spacing-container-mobile: 20px;
+  --spacing-container-desktop: 40px;
+  --spacing-gutter: 24px;
+  --spacing-section: 64px;
+
+  /* Shadows */
+  --shadow-ambient: 0 10px 30px -5px rgba(26, 27, 34, 0.05), 0 4px 12px -2px rgba(26, 27, 34, 0.03);
+  --shadow-ambient-lg: 0 20px 40px -6px rgba(26, 27, 34, 0.08), 0 8px 16px -4px rgba(26, 27, 34, 0.04);
+  --shadow-tactile: 0 12px 28px -4px rgba(179, 0, 0, 0.25);
+  --shadow-input-focus: 0 0 0 4px rgba(190, 15, 7, 0.12), 0 4px 12px rgba(26, 27, 34, 0.04);
+}
+
+:root {
+  --color-surface: #fbf8ff;
+  --color-surface-dim: #dad9e3;
+  --color-surface-bright: #fbf8ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f4f2fd;
+  --color-surface-container: #eeedf7;
+  --color-surface-container-high: #e8e7f1;
+  --color-surface-container-highest: #e3e1ec;
+  --color-on-surface: #1a1b22;
+  --color-on-surface-variant: #5c403b;
+  --color-inverse-surface: #2f3038;
+  --color-inverse-on-surface: #f1effa;
+  --color-outline: #916f6a;
+  --color-outline-variant: #e6bdb7;
+  --color-surface-tint: #be0f07;
+
+  --color-primary: #870000;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #b30000;
+  --color-on-primary-container: #ffbeb4;
+  --color-inverse-primary: #ffb4a8;
+
+  --color-secondary: #5f5e5f;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #e2dfe0;
+  --color-on-secondary-container: #636263;
+
+  --color-tertiary: #3f4142;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #565859;
+  --color-on-tertiary-container: #cececf;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-primary-fixed: #ffdad4;
+  --color-primary-fixed-dim: #ffb4a8;
+  --color-on-primary-fixed: #410000;
+  --color-on-primary-fixed-variant: #930000;
+
+  --color-secondary-fixed: #e5e2e3;
+  --color-secondary-fixed-dim: #c8c6c7;
+  --color-on-secondary-fixed: #1b1b1c;
+  --color-on-secondary-fixed-variant: #474647;
+
+  --color-tertiary-fixed: #e2e2e3;
+  --color-tertiary-fixed-dim: #c6c6c7;
+  --color-on-tertiary-fixed: #1a1c1d;
+  --color-on-tertiary-fixed-variant: #454748;
+
+  --color-background: #fbf8ff;
+  --color-on-background: #1a1b22;
+  --color-surface-variant: #e3e1ec;
+
+  --font-primary: 'Plus Jakarta Sans', 'Manrope', system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-primary);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Specific Typography classes matching exact Zenith Executive design specs */
+.headline-xl {
+  font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 56px;
+  letter-spacing: -0.02em;
+}
+
+.headline-lg {
+  font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+}
+
+.headline-lg-mobile {
+  font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 36px;
+}
+
+.headline-md {
+  font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+}
+
+.body-lg {
+  font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+.body-md {
+  font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.label-md {
+  font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.01em;
+}
+
+.label-sm {
+  font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+/* Glassmorphic navigation */
+.glass-nav {
+  background: rgba(251, 248, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(145, 111, 106, 0.15);
+}
+
+/* Card Container */
+.card-executive {
+  background-color: var(--color-surface-container-lowest);
+  border-radius: 1.5rem; /* 24px rounded-xl */
+  padding: 1.5rem; /* 24px */
+  box-shadow: 0 10px 30px -5px rgba(26, 27, 34, 0.05), 0 4px 12px -2px rgba(26, 27, 34, 0.03);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-executive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px -6px rgba(26, 27, 34, 0.08), 0 8px 16px -4px rgba(26, 27, 34, 0.04);
+}
+
+/* Floating List Item */
+.floating-list-item {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+
+.floating-list-item:hover {
+  background-color: var(--color-surface-container-low);
+}
+
+/* Executive Inputs */
+.input-executive {
+  border-radius: 1rem; /* 16px */
+  border: 1px solid #e4e4e7;
+  padding: 0.75rem 1rem;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-executive:focus {
+  border-color: var(--color-outline-variant);
+  box-shadow: 0 0 0 4px rgba(190, 15, 7, 0.12), 0 4px 12px rgba(26, 27, 34, 0.04);
+}

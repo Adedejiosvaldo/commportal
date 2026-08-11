@@ -1,0 +1,57 @@
+<header class="sticky top-0 z-50 glass-nav px-4 lg:px-8 py-3 flex items-center justify-between border-b border-[var(--color-outline-variant)]/20 shadow-xs">
+  <div class="flex items-center gap-3">
+    <!-- ZGIC Logo -->
+    <a routerLink="/" class="flex items-center gap-3 group">
+      <div class="p-1.5 bg-white rounded-xl shadow-xs border border-[var(--color-outline-variant)]/30 flex items-center justify-center transition-transform group-hover:scale-105">
+        <img src="/assets/zgic_logo.webp" alt="ZGIC Logo" class="h-7 w-auto object-contain" onerror="this.onerror=null; this.src='/assets/zgic_logo.png';" />
+      </div>
+      <div>
+        <span class="text-lg font-bold tracking-tight text-[var(--color-on-surface)] group-hover:text-[var(--color-primary-container)] transition-colors">Zenith Commission</span>
+        <span class="text-[10px] text-[var(--color-on-surface-variant)] block -mt-1 font-medium">Claim & Governance Portal</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- Navigation Links -->
+  <nav class="hidden md:flex items-center gap-1 bg-[var(--color-surface-container-low)] p-1 rounded-2xl border border-[var(--color-outline-variant)]/20 text-xs font-semibold">
+    <a routerLink="/broker-login" routerLinkActive="bg-white text-[var(--color-primary-container)] shadow-xs" class="px-3 py-1.5 rounded-xl transition-all hover:text-[var(--color-primary-container)]">Broker Login</a>
+    <a routerLink="/policy-lookup" routerLinkActive="bg-white text-[var(--color-primary-container)] shadow-xs" class="px-3 py-1.5 rounded-xl transition-all hover:text-[var(--color-primary-container)]">Policy Lookup</a>
+    <a routerLink="/claim" routerLinkActive="bg-white text-[var(--color-primary-container)] shadow-xs" class="px-3 py-1.5 rounded-xl transition-all hover:text-[var(--color-primary-container)]">Process Claim</a>
+    <a routerLink="/icna-dashboard" routerLinkActive="bg-white text-[var(--color-primary-container)] shadow-xs" class="px-3 py-1.5 rounded-xl transition-all hover:text-[var(--color-primary-container)]">ICNA Review</a>
+    <a routerLink="/cfo-dashboard" routerLinkActive="bg-white text-[var(--color-primary-container)] shadow-xs" class="px-3 py-1.5 rounded-xl transition-all hover:text-[var(--color-primary-container)]">CFO Approvals</a>
+    <a routerLink="/design-guide" routerLinkActive="bg-white text-[var(--color-primary-container)] shadow-xs" class="px-3 py-1.5 rounded-xl transition-all text-[var(--color-primary-container)]">Design Guide</a>
+  </nav>
+
+  <!-- Role / User Actions -->
+  <div class="flex items-center gap-3">
+    <div class="relative">
+      <button (click)="toggleRoleMenu()" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-xs font-medium text-[var(--color-on-surface)] border border-[var(--color-outline-variant)]/20 hover:bg-white transition-all">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>{{ activeRole() }}</span>
+        <svg class="w-3.5 h-3.5 text-[var(--color-on-surface-variant)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+
+      @if (isRoleMenuOpen()) {
+        <div class="absolute right-0 mt-2 w-48 rounded-2xl bg-white shadow-xl border border-[var(--color-outline-variant)]/30 p-1 z-50 text-xs animate-fade-in space-y-0.5">
+          <div class="px-3 py-1.5 text-[10px] uppercase font-bold text-[var(--color-on-surface-variant)] border-b border-gray-100">Switch Portal View</div>
+          <button (click)="selectRole('Broker View', '/policy-lookup')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-[var(--color-surface-container-low)] font-medium flex items-center justify-between">
+            <span>Broker Portal</span>
+            <span class="text-[10px] text-gray-400">External</span>
+          </button>
+          <button (click)="selectRole('ICNA Staff', '/icna-dashboard')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-[var(--color-surface-container-low)] font-medium flex items-center justify-between">
+            <span>ICNA Auditor</span>
+            <span class="text-[10px] text-gray-400">Internal</span>
+          </button>
+          <button (click)="selectRole('CFO Executive', '/cfo-dashboard')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-[var(--color-surface-container-low)] font-medium flex items-center justify-between">
+            <span>CFO Executive</span>
+            <span class="text-[10px] text-gray-400">Sign-Off</span>
+          </button>
+          <button (click)="selectRole('System Admin', '/design-guide')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-[var(--color-surface-container-low)] font-medium flex items-center justify-between">
+            <span>Design System</span>
+            <span class="text-[10px] text-gray-400">Tokens</span>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</header>

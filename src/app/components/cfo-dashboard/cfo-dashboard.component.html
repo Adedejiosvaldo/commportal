@@ -1,0 +1,223 @@
+<div class="min-h-screen bg-[var(--color-background)] text-[var(--color-on-background)] flex font-body-md relative">
+  
+  <!-- Floating Open Sidebar Trigger (Visible when Sidebar is Closed) -->
+  @if (!isSidebarOpen()) {
+    <button 
+      (click)="toggleSidebar()" 
+      class="fixed top-4 left-4 z-50 p-2.5 rounded-2xl bg-white shadow-md border border-[var(--color-outline-variant)]/30 text-[var(--color-primary-container)] hover:bg-gray-50 transition-all cursor-pointer flex items-center gap-2 text-xs font-semibold"
+      title="Open CFO Sidebar">
+      <span class="material-symbols-outlined">menu</span>
+      <span class="hidden sm:inline">Open Menu</span>
+    </button>
+  }
+
+  <!-- Dedicated CFO Executive Sidebar -->
+  <aside 
+    [class.translate-x-0]="isSidebarOpen()" 
+    [class.-translate-x-full]="!isSidebarOpen()" 
+    class="flex flex-col fixed left-0 top-0 h-full w-72 bg-[var(--color-surface-container-low)] border-r border-[var(--color-outline-variant)]/20 rounded-r-[32px] shadow-md z-40 py-8 px-6 justify-between transition-transform duration-300 ease-in-out">
+    
+    <div>
+      <!-- Profile / Brand Header with Close Button -->
+      <div class="mb-8 flex flex-col items-center relative">
+        <button 
+          (click)="toggleSidebar()" 
+          class="absolute -right-2 -top-2 p-1.5 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
+          title="Close Sidebar">
+          <span class="material-symbols-outlined text-lg">chevron_left</span>
+        </button>
+
+        <div class="w-16 h-16 rounded-full bg-white mb-3 overflow-hidden flex items-center justify-center border border-[var(--color-outline-variant)]/30 shadow-xs">
+          <img src="/assets/zgic_logo.webp" alt="ZGIC Logo" class="h-8 w-auto object-contain" onerror="this.onerror=null; this.src='/assets/zgic_logo.png';" />
+        </div>
+        <h2 class="text-lg font-extrabold text-[var(--color-primary)] leading-tight">CFO Authority</h2>
+      </div>
+
+      <!-- Dedicated CFO Navigation Links (No ICNA Access) -->
+      <nav class="space-y-2 text-xs font-semibold">
+        <a routerLink="/cfo-dashboard" class="w-full px-4 py-3 rounded-full flex items-center gap-3 transition-all bg-[var(--color-primary-container)] text-white shadow-sm">
+          <span class="material-symbols-outlined text-lg">account_balance</span>
+          <span>Approved Commissions</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="space-y-4 pt-6 border-t border-[var(--color-outline-variant)]/20 text-xs">
+      <div class="px-2 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+        <div>
+          <div class="font-bold text-[var(--color-on-surface)]">Funmi Oladipo</div>
+          <div class="text-[10px] text-gray-500 font-mono">Chief Financial Officer (CFO)</div>
+        </div>
+      </div>
+
+      <a routerLink="/staff-login" class="w-full py-2.5 px-4 rounded-full bg-transparent hover:bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-all flex items-center gap-3 font-medium">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        <span>Logout Staff Portal</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content Canvas -->
+  <main 
+    [class.md:ml-72]="isSidebarOpen()" 
+    [class.ml-0]="!isSidebarOpen()" 
+    class="flex-1 min-h-screen p-6 lg:p-10 space-y-8 transition-all duration-300">
+    
+    <!-- Title Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-outline-variant)]/20 pb-4">
+      <div>
+        <h1 class="text-2xl font-bold text-[var(--color-on-surface)]">CFO Approval Desk</h1>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button 
+          (click)="toggleSidebar()" 
+          class="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)] text-xs font-semibold transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-base">{{ isSidebarOpen() ? 'dock_to_left' : 'menu' }}</span>
+          <span>{{ isSidebarOpen() ? 'Collapse Menu' : 'Expand Menu' }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Metrics Cards: Pending Requests, Total Value (Naira), Active Brokers -->
+    <div class="grid sm:grid-cols-3 gap-6">
+      <!-- Card 1: How many pending -->
+      <div class="card-executive space-y-1">
+        <span class="text-[11px] text-[var(--color-on-surface-variant)] uppercase font-semibold">Pending Requests</span>
+        <div class="flex items-baseline justify-between">
+          <span class="text-3xl font-bold text-[var(--color-on-surface)]">5 Requests</span>
+        </div>
+        <p class="text-[11px] text-[var(--color-on-surface-variant)]">Awaiting CFO Sign-off</p>
+      </div>
+
+      <!-- Card 2: Value in Naira -->
+      <div class="card-executive space-y-1">
+        <span class="text-[11px] text-[var(--color-on-surface-variant)] uppercase font-semibold">Total Pending Value</span>
+        <div class="flex items-baseline justify-between">
+          <span class="text-3xl font-bold text-emerald-800 font-mono">₦44,310,000</span>
+          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full">NGN Currency</span>
+        </div>
+        <p class="text-[11px] text-[var(--color-on-surface-variant)]">Approved by ICNA</p>
+      </div>
+
+      <!-- Card 3: How many brokers -->
+      <div class="card-executive space-y-1">
+        <span class="text-[11px] text-[var(--color-on-surface-variant)] uppercase font-semibold">Broker Agencies</span>
+        <div class="flex items-baseline justify-between">
+          <span class="text-3xl font-bold text-[var(--color-on-surface)]">4 Brokers</span>
+          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full">NAICOM Verified</span>
+        </div>
+        <p class="text-[11px] text-[var(--color-on-surface-variant)]">Participating in Current Queue</p>
+      </div>
+    </div>
+
+    <!-- Approved Policy Commissions Table Card -->
+    <div class="bg-white rounded-3xl p-6 shadow-sm border border-[var(--color-outline-variant)]/20 space-y-4">
+      
+      <!-- Card Toolbar Header with Action Buttons inside Card -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+        <div>
+          <h2 class="text-lg font-bold text-[var(--color-on-surface)]">Approved Policy Commissions Queue</h2>
+          <p class="text-xs text-gray-500 font-mono">Awaiting Final Payout Sign-off</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button (click)="onAuthorizeAll()" [disabled]="selectedCount() === 0" class="px-5 py-2.5 rounded-2xl bg-[var(--color-primary-container)] text-white text-xs font-semibold hover:bg-[var(--color-primary)] transition-all shadow-md active:scale-95 flex items-center gap-2 disabled:opacity-40 cursor-pointer">
+            <span class="material-symbols-outlined text-sm">check_circle</span>
+            <span>Approve Selected ({{ selectedCount() }})</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-[var(--color-outline-variant)]/20 text-[11px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider">
+              <th class="py-3 px-3 w-10">
+                <input type="checkbox" (change)="toggleSelectAll($event)" class="rounded text-[var(--color-primary-container)] focus:ring-0" />
+              </th>
+              <th class="py-3 px-4">Temporary Policy Ref & Client</th>
+              <th class="py-3 px-4">Broker Agency</th>
+              <th class="py-3 px-4">Gross Premium</th>
+              <th class="py-3 px-4">Commission Payout</th>
+              <th class="py-3 px-4">CFO Approval Status</th>
+              <th class="py-3 px-4 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[var(--color-outline-variant)]/10 text-xs">
+            @for (item of paginatedClaims(); track item.id) {
+              <tr class="hover:bg-[var(--color-surface-container-low)] transition-colors">
+                <td class="py-4 px-3">
+                  <input type="checkbox" [(ngModel)]="item.selected" class="rounded text-[var(--color-primary-container)] focus:ring-0" />
+                </td>
+                <td class="py-4 px-4 font-bold text-[var(--color-on-surface)] font-mono">
+                  <div>{{ item.policyNumber }}</div>
+                  <div class="text-[11px] font-normal text-gray-500 font-sans">{{ item.clientName }}</div>
+                </td>
+                <td class="py-4 px-4">
+                  <div class="font-medium text-[var(--color-on-surface)]">{{ item.brokerName }}</div>
+                  <div class="text-[10px] text-gray-400 font-mono">{{ item.brokerId }}</div>
+                </td>
+                <td class="py-4 px-4 font-mono">₦{{ item.grossPremium }}</td>
+                <td class="py-4 px-4 font-mono font-bold text-emerald-700 text-sm">
+                  ₦{{ item.amount }}
+                </td>
+                <td class="py-4 px-4">
+                  <span [ngClass]="{
+                    'bg-emerald-100 text-emerald-800': item.status === 'Authorized',
+                    'bg-amber-100 text-amber-900': item.status === 'Pending CFO Sign-Off'
+                  }" class="px-3 py-1 rounded-full text-[10px] font-bold">
+                    {{ item.status }}
+                  </span>
+                </td>
+                <td class="py-4 px-4 text-right">
+                  <button (click)="authorizeSingle(item)" [disabled]="item.status === 'Authorized'" class="px-3.5 py-1.5 rounded-xl bg-[var(--color-primary-container)] text-white text-[11px] font-semibold hover:bg-[var(--color-primary)] disabled:opacity-40 transition-all cursor-pointer">
+                    {{ item.status === 'Authorized' ? 'Completed' : 'Authorize' }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Footer Controls -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100 text-xs text-[var(--color-on-surface-variant)]">
+        <div>
+          Showing <strong>{{ (currentPage() - 1) * pageSize + 1 }}</strong> to <strong>{{ Math.min(currentPage() * pageSize, claims().length) }}</strong> of <strong>{{ claims().length }}</strong> entries
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button 
+            (click)="goToPage(currentPage() - 1)" 
+            [disabled]="currentPage() === 1" 
+            class="px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] font-semibold disabled:opacity-40 hover:bg-[var(--color-surface-container-high)] transition-all cursor-pointer">
+            ← Previous
+          </button>
+
+          @for (page of pageNumbers(); track page) {
+            <button 
+              (click)="goToPage(page)" 
+              [class.bg-[var(--color-primary-container)]]="currentPage() === page" 
+              [class.text-white]="currentPage() === page" 
+              [class.font-bold]="currentPage() === page" 
+              class="w-7 h-7 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] transition-all flex items-center justify-center cursor-pointer">
+              {{ page }}
+            </button>
+          }
+
+          <button 
+            (click)="goToPage(currentPage() + 1)" 
+            [disabled]="currentPage() === totalPages()" 
+            class="px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] font-semibold disabled:opacity-40 hover:bg-[var(--color-surface-container-high)] transition-all cursor-pointer">
+            Next →
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>

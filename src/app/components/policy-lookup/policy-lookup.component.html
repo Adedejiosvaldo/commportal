@@ -1,0 +1,163 @@
+<div class="min-h-screen bg-[var(--color-background)] text-[var(--color-on-background)] flex flex-col font-body-md">
+  
+  <!-- Top Navigation Bar -->
+  <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-12 h-20 glass-nav border-b border-[var(--color-outline-variant)]/20 shadow-xs">
+    <!-- Brand Logo -->
+    <div class="flex items-center gap-3">
+      <img src="/assets/zgic_logo.webp" alt="ZGIC Logo" class="h-8 w-auto object-contain" onerror="this.onerror=null; this.src='/assets/zgic_logo.png';" />
+      <div>
+        <span class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase block">Zenith General Insurance</span>
+        <span class="text-lg font-bold text-[var(--color-primary)] leading-tight">Commission Portal</span>
+      </div>
+    </div>
+
+    <!-- Trailing Actions -->
+    <div class="flex items-center gap-3">
+      <button class="p-2 rounded-full text-[var(--color-secondary)] hover:bg-[var(--color-surface-container-low)] transition-colors cursor-pointer" title="Notifications">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <button class="p-2 rounded-full text-[var(--color-secondary)] hover:bg-[var(--color-surface-container-low)] transition-colors cursor-pointer" title="Account Profile">
+        <span class="material-symbols-outlined">account_circle</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Canvas -->
+  <main class="flex-grow pt-32 pb-24 px-6 md:px-12 flex flex-col items-center justify-start min-h-[calc(100vh-80px)]">
+    
+    <!-- Search Section -->
+    <div class="w-full max-w-2xl mt-4 flex flex-col items-center text-center space-y-4">
+      <h1 class="font-headline-md text-headline-md text-[var(--color-on-surface)] mb-1 font-bold text-3xl md:text-4xl">Policy Commission Lookup</h1>
+      <p class="font-body-lg mt-2 text-body-lg text-[var(--color-secondary)] mb-4 max-w-lg text-sm">
+        Enter a temporary policy number.
+      </p>
+
+      <!-- Search Input Container -->
+      <div class="w-full relative search-input transition-all rounded-full bg-[var(--color-surface-container)] flex items-center px-6 py-3.5 shadow-sm border"
+           [ngClass]="validationError() ? 'border-red-500 ring-2 ring-red-100' : 'border-[var(--color-outline-variant)]/20'">
+        <span class="material-symbols-outlined text-[var(--color-secondary)] mr-3">search</span>
+        <input 
+          id="policy-search" 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (input)="onInput()"
+          (keyup.enter)="onSearch()"
+          placeholder="Enter Temporary Policy Number (e.g., ZG/TP/1000/84920/01)" 
+          class="w-full bg-transparent border-none outline-none font-body-lg text-body-lg text-[var(--color-on-surface)] placeholder-[var(--color-on-surface-variant)] focus:ring-0 p-0 text-sm"
+        />
+
+        @if (searchQuery.trim() || hasSearched()) {
+          <button 
+            type="button"
+            (click)="clearSearch()"
+            class="mr-2 text-[var(--color-secondary)] hover:text-[var(--color-on-surface)] transition-colors p-1 rounded-full hover:bg-gray-200/60 flex items-center justify-center cursor-pointer"
+            title="Clear search">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        }
+
+        <button 
+          (click)="onSearch()"
+          [disabled]="!searchQuery.trim()"
+          id="search-btn"
+          class="ml-2 bg-[var(--color-primary-container)] text-white rounded-[24px] px-6 py-2.5 font-body-md text-body-md font-semibold hover:bg-[var(--color-primary)] transition-colors cursor-pointer text-xs uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed">
+          Lookup
+        </button>
+      </div>
+
+      <!-- Validation Error Message Banner -->
+      @if (validationError()) {
+        <div class="w-full p-3 rounded-2xl bg-red-50 text-red-700 text-xs font-semibold flex items-center justify-center gap-2 border border-red-200 animate-fade-in">
+          <span class="material-symbols-outlined text-sm text-red-600">error</span>
+          <span>{{ validationError() }}</span>
+        </div>
+      }
+
+      <!-- Demo Try Hints -->
+      <div class="flex items-center gap-2 pt-2">
+        <span class="font-label-caps text-label-caps text-[var(--color-on-surface-variant)] uppercase text-[11px] font-semibold">
+          Try searching:
+        </span>
+        <button (click)="searchQuery = 'ZG/TP/1000/84920/01'; onSearch()" class="px-2.5 py-0.5 rounded-full bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)] text-xs font-bold hover:underline cursor-pointer">ZG/TP/1000/84920/01</button>
+        <button (click)="searchQuery = 'ZG/TP/1000/91042/02'; onSearch()" class="px-2.5 py-0.5 rounded-full bg-[var(--color-surface-container-high)] text-[var(--color-on-surface)] text-xs font-bold hover:underline cursor-pointer">ZG/TP/1000/91042/02</button>
+        <button (click)="searchQuery = 'ZG/TP/1000/00000/00'; onSearch()" class="px-2.5 py-0.5 rounded-full bg-[var(--color-surface-container-high)] text-[var(--color-on-surface)] text-xs font-bold hover:underline cursor-pointer">ZG/TP/1000/00000/00 (Claimed)</button>
+      </div>
+    </div>
+
+    <!-- Results Area (HIDDEN INITIALLY UNTIL USER SEARCHES VALID POLICY) -->
+    @if (hasSearched()) {
+      <div class="w-full max-w-2xl mt-10 transition-all duration-300 animate-fade-in" id="results-container">
+        
+        <!-- State 1: Claimed (Already Claimed State) -->
+        @if (searchState() === 'claimed') {
+          <div class="w-full bg-[var(--color-error-container)] rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center text-center border border-red-200">
+            <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4 text-[var(--color-error)] shadow-xs">
+              <span class="material-symbols-outlined text-4xl">error</span>
+            </div>
+            <h2 class="font-headline-md text-headline-md text-[var(--color-on-error-container)] mb-2 font-bold text-xl">Already Claimed</h2>
+            <p class="font-body-lg text-body-lg text-[var(--color-on-error-container)]/80 text-xs">
+              The commission for policy <strong>{{ activePolicyNumber() }}</strong> has already been claimed and disbursed.
+            </p>
+          </div>
+        }
+
+        <!-- State 2: Active Policy Details Card -->
+        @if (searchState() === 'active') {
+          <div class="w-full bg-[var(--color-surface-container-lowest)] rounded-[24px] p-8 shadow-md border border-[var(--color-outline-variant)]/30 space-y-6">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="font-label-caps text-label-caps text-[var(--color-on-surface-variant)] uppercase text-xs font-bold block mb-1">Temporary Policy Number</span>
+                <h2 class="font-headline-md text-headline-md text-[var(--color-on-surface)] text-2xl font-bold font-mono">{{ activePolicyNumber() }}</h2>
+              </div>
+              <div class="bg-emerald-50 px-4 py-1.5 rounded-full flex items-center gap-2 border border-emerald-200 shadow-xs">
+                <div class="w-2 h-2 rounded-full bg-emerald-600"></div>
+                <span class="font-label-caps text-label-caps text-emerald-800 uppercase text-xs font-bold">Available</span>
+              </div>
+            </div>
+
+            <div class="border-t border-[var(--color-surface-variant)]/50 pt-6 flex flex-col md:flex-row gap-6 justify-between">
+              <div class="flex-1">
+                <span class="font-label-caps text-label-caps text-[var(--color-on-surface-variant)] uppercase text-xs font-bold mb-2 block">Commission Value</span>
+                <div class="flex items-baseline gap-1 text-emerald-700">
+                  <span class="text-xl font-medium">₦</span>
+                  <span class="text-3xl md:text-4xl font-bold tracking-tight font-mono">{{ activePolicyAmount() }}</span>
+                </div>
+              </div>
+              
+              <div class="flex-1 flex flex-col justify-end space-y-3 text-xs">
+                <div class="flex justify-between border-b border-gray-100 pb-1.5">
+                  <span class="text-[var(--color-secondary)]">Policy Holder</span>
+                  <span class="text-[var(--color-on-surface)] font-bold">{{ activePolicyHolder() }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-[var(--color-secondary)]">Issue Date</span>
+                  <span class="text-[var(--color-on-surface)] font-bold">{{ activeIssueDate() }}</span>
+                </div>
+              </div>
+            </div>
+
+            <button 
+              routerLink="/claim"
+              class="w-full bg-[var(--color-primary-container)] text-white rounded-[24px] py-4 font-semibold text-xs hover:bg-[var(--color-primary)] transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-[0.98] uppercase tracking-wider cursor-pointer">
+              <span class="material-symbols-outlined">payments</span>
+              <span>Claim Commission</span>
+            </button>
+          </div>
+        }
+
+        <!-- State 3: Empty / Not Found -->
+        @if (searchState() === 'empty') {
+          <div class="w-full bg-[var(--color-surface-container-low)] rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center text-center border border-[var(--color-outline-variant)]/20">
+            <span class="material-symbols-outlined text-4xl text-[var(--color-secondary)] mb-3">search_off</span>
+            <h2 class="font-headline-md text-headline-md text-[var(--color-on-surface)] mb-1 font-bold text-xl">Policy Not Found</h2>
+            <p class="font-body-md text-body-md text-[var(--color-secondary)] text-xs">
+              No temporary policy found for <strong>{{ activePolicyNumber() }}</strong>. Please verify the policy number and try again.
+            </p>
+          </div>
+        }
+
+      </div>
+    }
+
+  </main>
+</div>
