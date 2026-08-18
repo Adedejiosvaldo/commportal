@@ -19,6 +19,24 @@ export class LookupStateService {
   private readonly storageKey = 'lookupState';
   private current: LookupState | null = null;
 
+  /**
+   * Deliberately in-memory only: a page reload destroys it, so the claim page
+   * cannot be refreshed or deep-linked into with half-built state.
+   */
+  private claimAuthorized = false;
+
+  authorizeClaim() {
+    this.claimAuthorized = true;
+  }
+
+  isClaimAuthorized(): boolean {
+    return this.claimAuthorized;
+  }
+
+  revokeClaimAuthorization() {
+    this.claimAuthorized = false;
+  }
+
   set(state: LookupState | null) {
     this.current = state;
 
@@ -51,6 +69,7 @@ export class LookupStateService {
 
   clear() {
     this.current = null;
+    this.claimAuthorized = false;
     sessionStorage.removeItem(this.storageKey);
   }
 }

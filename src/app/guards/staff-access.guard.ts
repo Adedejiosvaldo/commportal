@@ -2,12 +2,22 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 import { resolveDepartmentName } from '../../services/auth.service';
+import { LookupStateService } from '../../services/lookup-state.service';
 
 export type StaffDepartment = 'ICNA' | 'Finance';
 
 export const claimAccessGuard: CanActivateFn = () => {
   const router = inject(Router);
+  const lookupState = inject(LookupStateService);
   const rawState = sessionStorage.getItem('lookupState');
+
+  // In-memory flag: cleared by a page reload, so refreshing or deep-linking
+  // /claim sends the user back to the lookup instead of running on partial data.
+  if (!lookupState.isClaimAuthorized()) {
+    lookupState.clear();
+    router.navigate(['/policy-lookup']);
+    return false;
+  }
 
   if (!rawState) {
     router.navigate(['/policy-lookup']);

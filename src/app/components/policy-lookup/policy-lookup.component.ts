@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { CommissionRecord, CommissionService } from '../../../services/commission.service';
 import { LookupState, LookupStateService } from '../../../services/lookup-state.service';
@@ -10,7 +10,7 @@ import { normalizeGuid } from '../../../services/auth.service';
 @Component({
   selector: 'app-policy-lookup',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './policy-lookup.component.html',
   providers: [DatePipe],
 })
@@ -32,17 +32,24 @@ export class PolicyLookupComponent {
     private lookupState: LookupStateService,
     private router: Router,
   ) {
-    const previous = this.lookupState.get();
-    if (previous) {
-      this.searchQuery = previous.query;
-      this.hasSearched.set(true);
-      this.searchState.set(previous.amount === '0' ? 'claimed' : 'active');
-      this.activePolicyNumber.set(previous.policyNumber);
-      this.activePolicyHolder.set(previous.holder);
-      this.activePolicyAmount.set(previous.amount);
-      this.activeIssueDate.set(previous.issueDate);
-      this.activeAccountOfficer.set(previous.accountOfficer);
+    // The lookup always opens blank. Any stored state is claim-page payload only,
+    // so a refresh or a Back out of the claim page never repaints an old search.
+    this.lookupState.clear();
+  }
+
+  protected onClaimCommission() {
+    if (this.searchState() === 'claimed' || !this.lookupState.get()) {
+      return;
     }
+
+    this.lookupState.authorizeClaim();
+    this.router.navigate(['/claim'], {
+      queryParams: {
+        ref: this.activePolicyNumber(),
+        accountName: this.activeAccountOfficer(),
+        amount: this.activePolicyAmount(),
+      },
+    });
   }
 
   protected onInput() {
@@ -129,7 +136,8 @@ export class PolicyLookupComponent {
         }
 
         const policyNumber = policy.tempPolicyNumber ?? query;
-        const accountOfficer = String(policy.accountOfficer ?? 'Joseph Adewunmi');
+        // accountName is the human name; accountOfficer is the login id (e.g. "joseph.adewunmi").
+        const accountOfficer = String(policy.accountName || policy.accountOfficer || '').trim();
         const commissionAmount = Number(policy.commissionAmount ?? 0);
         const formattedAmount = Number.isFinite(commissionAmount)
           ? this.formatCurrency(commissionAmount)

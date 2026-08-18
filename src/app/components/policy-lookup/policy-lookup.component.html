@@ -229,12 +229,7 @@
             </div>
 
             <button
-              [routerLink]="['/claim']"
-              [queryParams]="{
-                ref: activePolicyNumber(),
-                accountName: activeAccountOfficer(),
-                amount: activePolicyAmount(),
-              }"
+              (click)="onClaimCommission()"
               [disabled]="searchState() === 'claimed'"
               class="w-full bg-[var(--color-primary-container)] text-white rounded-[24px] py-4 font-semibold text-xs hover:bg-[var(--color-primary)] transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-[0.98] uppercase tracking-wider cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >

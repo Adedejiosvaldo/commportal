@@ -46,18 +46,12 @@ export class ClaimSubmissionComponent {
 
     this.route.queryParams.subscribe((params) => {
       this.policyNumber = params['ref'] ?? priorState?.policyNumber ?? '';
-      this.expectedAccountName =
-        params['accountName'] ?? priorState?.accountOfficer ?? 'Joseph Adewunmi';
+      this.expectedAccountName = params['accountName'] ?? priorState.accountOfficer ?? '';
 
-      const rawAmount = String(params['amount'] ?? priorState?.amount ?? '0');
+      const rawAmount = String(params['amount'] ?? priorState.amount ?? '0');
       const parsedAmount = Number(rawAmount.replace(/[^\d.-]/g, ''));
       this.availableCommission.set(Number.isFinite(parsedAmount) ? parsedAmount : 0);
     });
-
-    if (!priorState) {
-      this.expectedAccountName = 'Joseph Adewunmi';
-      this.availableCommission.set(0);
-    }
 
     this.loadBanks();
   }
@@ -146,8 +140,27 @@ export class ClaimSubmissionComponent {
     });
   }
 
-  private normalizeName(value: string): string {
-    return (value ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  private nameTokens(value: string): string[] {
+    return (value ?? '')
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter((token) => token.length > 0);
+  }
+
+  /**
+   * Names are compared token by token so that word order and extra names on the
+   * bank record do not break the match. Every token the portal holds must be
+   * present on the bank account name; extra bank tokens (middle names) are allowed.
+   */
+  private namesMatch(bankAccountName: string, expectedName: string): boolean {
+    const bankTokens = new Set(this.nameTokens(bankAccountName));
+    const expectedTokens = this.nameTokens(expectedName);
+
+    if (!bankTokens.size || !expectedTokens.length) {
+      return false;
+    }
+
+    return expectedTokens.every((token) => bankTokens.has(token));
   }
 
   private loadBanks() {
@@ -183,10 +196,7 @@ export class ClaimSubmissionComponent {
           return;
         }
 
-        const normalizedBankAccountName = this.normalizeName(accountName);
-        const normalizedExpectedName = this.normalizeName(expectedAccountName);
-
-        if (normalizedBankAccountName === normalizedExpectedName) {
+        if (this.namesMatch(accountName, expectedAccountName)) {
           this.accountVerified.set(true);
           this.matchedAccountName.set(accountName);
           this.validationMessage.set('Account name matches the policy account officer.');
