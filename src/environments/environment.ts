@@ -1,7 +1,6 @@
 export const environment = {
   production: false,
   mode: 'testing',
-  useMockBankData: true,
   apiBaseUrl: 'http://localhost:4200/mock',
   staffAuthEndpoint: 'http://172.18.13.18/ZGICHRLeavePortal/api/Token',
   staffAuthMode: 'mock' as 'mock' | 'live',

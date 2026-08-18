@@ -3,8 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { environment } from '../environments/environment';
-
 export interface CommissionSearchResponse {
   code: number;
   message: string;
@@ -188,36 +186,12 @@ export class CommissionService {
   }
 
   getBanks(): Observable<BankOption[]> {
-    if (environment.useMockBankData) {
-      return of([
-        { bankName: 'ACCESS BANK NIGERIA PLC', bankCode: '044' },
-        { bankName: 'FIRST BANK OF NIGERIA PLC', bankCode: '011' },
-        { bankName: 'GUARANTY TRUST BANK PLC', bankCode: '058' },
-        { bankName: 'UBA PLC.', bankCode: '033' },
-        { bankName: 'ZENITH BANK PLC', bankCode: '057' },
-      ]);
-    }
-
     return this.http.get<BankOption[]>(`${this.bankApiUrl}/getBankData`, {
       withCredentials: true,
     });
   }
 
   validateAccount(request: AccountValidationRequest): Observable<AccountValidationResult> {
-    if (environment.useMockBankData) {
-      return of({
-        status: true,
-        result: {
-          bank_name: 'GUARANTY TRUST BANK PLC',
-          account_name: 'Joseph Adewunmi',
-          account_number: request.accountNumber,
-          bank_code: request.bankCode,
-          requests: null,
-          execution_time: '',
-        },
-      });
-    }
-
     return this.http.post<AccountValidationResult>(`${this.bankApiUrl}/getBankDetails`, request, {
       withCredentials: true,
     });
