@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
+import { CommissionRecord, CommissionService } from '../../../services/commission.service';
+
 export interface AuditClaim {
   id: string;
   policyNumber: string;
@@ -18,7 +20,7 @@ export interface AuditClaim {
   selector: 'app-icna-dashboard',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './icna-dashboard.component.html'
+  templateUrl: './icna-dashboard.component.html',
 })
 export class IcnaDashboardComponent {
   protected Math = Math;
@@ -27,21 +29,19 @@ export class IcnaDashboardComponent {
   protected currentPage = signal<number>(1);
   protected pageSize = 5;
   protected isSidebarOpen = signal<boolean>(true);
+  protected claims = signal<AuditClaim[]>([]);
+  protected isLoading = signal<boolean>(false);
+  protected errorMessage = signal<string | null>(null);
+  protected infoMessage = signal<string | null>(null);
+  protected currentStaffName = signal<string>('ICNA Staff');
 
-  protected claims = signal<AuditClaim[]>([
-    { id: '1', policyNumber: 'ZG/TP/1000/84920/01', clientName: 'Dangote Logistics Corp', brokerName: 'Oluwaseun Adeyemi', brokerId: 'BRK-9904', amount: '1,250,000', status: 'Verified', selected: false },
-    { id: '2', policyNumber: 'ZG/TP/1000/91042/02', clientName: 'Oceanic Marine Services', brokerName: 'Apex Insurance Brokers Ltd', brokerId: 'BRK-4412', amount: '5,760,000', status: 'Pending Review', selected: false },
-    { id: '3', policyNumber: 'ZG/TP/1000/30219/03', clientName: 'MainOne Data Center Facility', brokerName: 'Oluwaseun Adeyemi', brokerId: 'BRK-9904', amount: '840,000', status: 'Verified', selected: false },
-    { id: '4', policyNumber: 'ZG/TP/1000/11094/04', clientName: 'BUA Cement Processing', brokerName: 'Heritage Risk Consultants', brokerId: 'BRK-1092', amount: '14,200,000', status: 'Pending Review', selected: false },
-    { id: '5', policyNumber: 'ZG/TP/1000/44810/05', clientName: 'Honeywell Flour Mills', brokerName: 'Allied Risk Management Ltd', brokerId: 'BRK-3301', amount: '3,450,000', status: 'Pending Review', selected: false },
-    { id: '6', policyNumber: 'ZG/TP/1000/77219/06', clientName: 'Seplat Energy Operations', brokerName: 'Leadway Brokers Ltd', brokerId: 'BRK-2290', amount: '8,900,000', status: 'Pending Review', selected: false },
-    { id: '7', policyNumber: 'ZG/TP/1000/55012/07', clientName: 'Flour Mills of Nigeria', brokerName: 'Apex Insurance Brokers Ltd', brokerId: 'BRK-4412', amount: '2,100,000', status: 'Verified', selected: false },
-    { id: '8', policyNumber: 'ZG/TP/1000/88194/08', clientName: 'Oando Clean Energy', brokerName: 'Oluwaseun Adeyemi', brokerId: 'BRK-9904', amount: '6,300,000', status: 'Pending Review', selected: false },
-    { id: '9', policyNumber: 'ZG/TP/1000/12940/09', clientName: 'Transcorp Power Plant', brokerName: 'Heritage Risk Consultants', brokerId: 'BRK-1092', amount: '9,150,000', status: 'Pending Review', selected: false },
-    { id: '10', policyNumber: 'ZG/TP/1000/66410/10', clientName: 'Julius Berger Nigeria', brokerName: 'Allied Risk Management Ltd', brokerId: 'BRK-3301', amount: '4,800,000', status: 'Verified', selected: false }
-  ]);
-
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private commissionService: CommissionService,
+  ) {
+    this.currentStaffName.set(this.getLoggedInStaffName());
+    this.loadApproverQueue();
+  }
 
   protected toggleSidebar() {
     this.isSidebarOpen.set(!this.isSidebarOpen());
@@ -52,13 +52,20 @@ export class IcnaDashboardComponent {
     const query = this.searchQuery.toLowerCase().trim();
 
     if (query) {
-      list = list.filter(c => c.policyNumber.toLowerCase().includes(query) || c.brokerName.toLowerCase().includes(query) || c.clientName.toLowerCase().includes(query));
+      list = list.filter(
+        (c) =>
+          c.policyNumber.toLowerCase().includes(query) ||
+          c.brokerName.toLowerCase().includes(query) ||
+          c.clientName.toLowerCase().includes(query),
+      );
     }
 
     return list;
   });
 
-  protected totalPages = computed(() => Math.ceil(this.filteredClaims().length / this.pageSize) || 1);
+  protected totalPages = computed(
+    () => Math.ceil(this.filteredClaims().length / this.pageSize) || 1,
+  );
 
   protected paginatedClaims = computed(() => {
     const startIndex = (this.currentPage() - 1) * this.pageSize;
@@ -79,11 +86,29 @@ export class IcnaDashboardComponent {
     }
   }
 
-  protected selectedCount = computed(() => this.claims().filter(c => c.selected).length);
+  protected selectedCount = computed(() => this.claims().filter((c) => c.selected).length);
+
+  protected pendingRequestCount = computed(() => this.claims().length);
+
+  protected pendingTotalValue = computed(() => {
+    const total = this.claims().reduce((sum, claim) => {
+      const numericValue = Number(String(claim.amount).replace(/[^0-9.-]+/g, '')) || 0;
+      return sum + numericValue;
+    }, 0);
+
+    return new Intl.NumberFormat('en-NG', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(total);
+  });
+
+  protected brokerCount = computed(
+    () => new Set(this.claims().map((claim) => claim.brokerName)).size,
+  );
 
   protected toggleSelectAll(event: Event) {
     const checked = (event.target as HTMLInputElement).checked;
-    this.claims.update(list => list.map(c => ({ ...c, selected: checked })));
+    this.claims.update((list) => list.map((c) => ({ ...c, selected: checked })));
   }
 
   protected openReviewModal(claim: AuditClaim) {
@@ -93,12 +118,119 @@ export class IcnaDashboardComponent {
   protected approveClaim() {
     if (this.inspectingClaim()) {
       const id = this.inspectingClaim()!.id;
-      this.claims.update(list => list.map(c => c.id === id ? { ...c, status: 'Verified' } : c));
+      this.claims.update((list) =>
+        list.map((c) => (c.id === id ? { ...c, status: 'Verified' } : c)),
+      );
       this.inspectingClaim.set(null);
     }
   }
 
   protected onBatchApprove() {
-    this.claims.update(list => list.map(c => c.selected ? { ...c, status: 'Verified', selected: false } : c));
+    this.claims.update((list) =>
+      list.map((c) => (c.selected ? { ...c, status: 'Verified', selected: false } : c)),
+    );
+  }
+
+  protected logout() {
+    sessionStorage.removeItem('staffSession');
+    sessionStorage.removeItem('activeQueue');
+    sessionStorage.removeItem('approverQueue');
+    sessionStorage.removeItem('lookupState');
+    this.router.navigate(['/staff-login']);
+  }
+
+  private getLoggedInStaffName(): string {
+    const rawSession = sessionStorage.getItem('staffSession');
+    const session = rawSession ? JSON.parse(rawSession) : null;
+
+    return session?.userName ?? session?.username ?? session?.staffNumber ?? 'ICNA Staff';
+  }
+
+  private loadApproverQueue() {
+    const rawSession = sessionStorage.getItem('staffSession');
+    const session = rawSession ? JSON.parse(rawSession) : null;
+    const user = this.normalizeUsername(session?.userName ?? session?.username ?? '');
+
+    if (!user) {
+      this.claims.set([]);
+      this.errorMessage.set('No active staff session was found for the ICNA queue.');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    this.infoMessage.set(null);
+
+    this.commissionService.getAllCommissionsForApprover(user).subscribe({
+      next: (response) => {
+        const rows = (response?.data ?? []) as CommissionRecord[];
+        const uniqueRows = this.dedupeRows(rows);
+
+        const mapped: AuditClaim[] = uniqueRows.map((record, index) => ({
+          id: String(record.requestDataId ?? record.id ?? index + 1),
+          policyNumber:
+            record.tempPolicyNumber ??
+            record.permanentPolicyNumber ??
+            record.transId ??
+            `REF-${record.requestDataId ?? record.id ?? index + 1}`,
+          clientName: record.clientName ?? 'Unknown Client',
+          brokerName: record.brokerName ?? 'Unknown Broker',
+          brokerId: record.brokerEmail ?? record.clientId ?? 'N/A',
+          amount: this.formatCurrency(record.commissionAmount ?? 0),
+          status: String(record.wkf ?? '0') === '1' ? 'Verified' : 'Pending Review',
+          selected: false,
+        }));
+
+        sessionStorage.setItem('approverQueue', JSON.stringify(uniqueRows));
+        this.claims.set(mapped);
+
+        // if (this.claims().length === 0) {
+        //   this.infoMessage.set('No records were populated for this approver.');
+        // }
+
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Failed to load ICNA approver queue', error);
+        this.claims.set([]);
+        this.infoMessage.set('No records were populated for this approver.');
+        this.errorMessage.set(null);
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  private normalizeUsername(value: string): string {
+    return String(value ?? '')
+      .trim()
+      .replace(/\s+/g, '')
+      .toLowerCase();
+  }
+
+  private dedupeRows(rows: CommissionRecord[]): CommissionRecord[] {
+    const seen = new Set<string>();
+
+    return rows.filter((row) => {
+      const key = String(row.requestDataId ?? row.id ?? row.transId ?? JSON.stringify(row));
+      if (seen.has(key)) {
+        return false;
+      }
+
+      seen.add(key);
+      return true;
+    });
+  }
+
+  private formatCurrency(value: number | string | null | undefined): string {
+    const numericValue = Number(value ?? 0);
+
+    if (!Number.isFinite(numericValue)) {
+      return '0';
+    }
+
+    return new Intl.NumberFormat('en-NG', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(numericValue);
   }
 }

@@ -1,42 +1,62 @@
-<div class="min-h-screen bg-[var(--color-background)] text-[var(--color-on-background)] flex font-body-md relative">
-  
+<div
+  class="min-h-screen bg-[var(--color-background)] text-[var(--color-on-background)] flex font-body-md relative"
+>
   <!-- Floating Open Sidebar Trigger (Visible when Sidebar is Closed) -->
   @if (!isSidebarOpen()) {
-    <button 
-      (click)="toggleSidebar()" 
+    <button
+      (click)="toggleSidebar()"
       class="fixed top-4 left-4 z-50 p-2.5 rounded-2xl bg-white shadow-md border border-[var(--color-outline-variant)]/30 text-[var(--color-primary-container)] hover:bg-gray-50 transition-all cursor-pointer flex items-center gap-2 text-xs font-semibold"
-      title="Open ICNA Sidebar">
+      title="Open ICNA Sidebar"
+    >
       <span class="material-symbols-outlined">menu</span>
       <span class="hidden sm:inline">Open Menu</span>
     </button>
   }
 
   <!-- Dedicated ICNA Auditor Sidebar -->
-  <aside 
-    [class.translate-x-0]="isSidebarOpen()" 
-    [class.-translate-x-full]="!isSidebarOpen()" 
-    class="flex flex-col fixed left-0 top-0 h-full w-72 bg-[var(--color-surface-container-low)] border-r border-[var(--color-outline-variant)]/20 rounded-r-[32px] shadow-md z-40 py-8 px-6 justify-between transition-transform duration-300 ease-in-out">
-    
+  <aside
+    [class.translate-x-0]="isSidebarOpen()"
+    [class.-translate-x-full]="!isSidebarOpen()"
+    class="flex flex-col fixed left-0 top-0 h-full w-72 bg-[var(--color-surface-container-low)] border-r border-[var(--color-outline-variant)]/20 rounded-r-[32px] shadow-md z-40 py-8 px-6 justify-between transition-transform duration-300 ease-in-out"
+  >
     <div>
       <!-- Profile / Brand Header with Close Button -->
       <div class="mb-8 flex flex-col items-center relative">
-        <button 
-          (click)="toggleSidebar()" 
+        <button
+          (click)="toggleSidebar()"
           class="absolute -right-2 -top-2 p-1.5 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
-          title="Close Sidebar">
+          title="Close Sidebar"
+        >
           <span class="material-symbols-outlined text-lg">chevron_left</span>
         </button>
 
-        <div class="w-16 h-16 rounded-full bg-white mb-3 overflow-hidden flex items-center justify-center border border-[var(--color-outline-variant)]/30 shadow-xs">
-          <img src="/assets/zgic_logo.webp" alt="ZGIC Logo" class="h-8 w-auto object-contain" onerror="this.onerror=null; this.src='/assets/zgic_logo.png';" />
+        <div
+          class="w-16 h-16 rounded-full bg-white mb-3 overflow-hidden flex items-center justify-center border border-[var(--color-outline-variant)]/30 shadow-xs"
+        >
+          <img
+            src="assets/zgic_logo.webp"
+            alt="ZGIC Logo"
+            class="h-8 w-auto object-contain"
+            onerror="
+              this.onerror = null;
+              this.src = 'assets/zgic_logo.png';
+            "
+          />
         </div>
-        <h2 class="text-lg font-extrabold text-[var(--color-primary)] leading-tight">ICNA Internal Audit</h2>
-        <p class="text-xs text-[var(--color-on-surface-variant)] mt-0.5 font-medium">Audit Verification Portal</p>
+        <h2 class="text-lg font-extrabold text-[var(--color-primary)] leading-tight">
+          ICNA Internal Audit
+        </h2>
+        <p class="text-xs text-[var(--color-on-surface-variant)] mt-0.5 font-medium">
+          Audit Verification Portal
+        </p>
       </div>
 
       <!-- Dedicated ICNA Navigation Links -->
       <nav class="space-y-2 text-xs font-semibold">
-        <a routerLink="/icna-dashboard" class="w-full px-4 py-3 rounded-full flex items-center gap-3 transition-all bg-[var(--color-primary-container)] text-white shadow-sm">
+        <a
+          routerLink="/icna-dashboard"
+          class="w-full px-4 py-3 rounded-full flex items-center gap-3 transition-all bg-[var(--color-primary-container)] text-white shadow-sm"
+        >
           <span class="material-symbols-outlined text-lg">verified_user</span>
           <span>Pending Audit Queue</span>
         </a>
@@ -53,7 +73,10 @@
         </div>
       </div>
 
-      <a routerLink="/staff-login" class="w-full py-2.5 px-4 rounded-full bg-transparent hover:bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-all flex items-center gap-3 font-medium">
+      <a
+        routerLink="/staff-login"
+        class="w-full py-2.5 px-4 rounded-full bg-transparent hover:bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-all flex items-center gap-3 font-medium"
+      >
         <span class="material-symbols-outlined text-lg">logout</span>
         <span>Logout Staff Portal</span>
       </a>
@@ -61,40 +84,57 @@
   </aside>
 
   <!-- Main Content Canvas -->
-  <main 
-    [class.md:ml-72]="isSidebarOpen()" 
-    [class.ml-0]="!isSidebarOpen()" 
-    class="flex-1 min-h-screen p-6 lg:p-10 space-y-8 transition-all duration-300">
-    
+  <main
+    [class.md:ml-72]="isSidebarOpen()"
+    [class.ml-0]="!isSidebarOpen()"
+    class="flex-1 min-h-screen p-6 lg:p-10 space-y-8 transition-all duration-300"
+  >
     <!-- Contextual Title Header -->
-    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--color-outline-variant)]/20 pb-6">
+    <header
+      class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--color-outline-variant)]/20 pb-6"
+    >
       <div>
-        <a routerLink="/icna-dashboard" class="inline-flex items-center gap-2 text-xs text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary-container)] transition-colors mb-2 group">
-          <span class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
+        <a
+          routerLink="/icna-dashboard"
+          class="inline-flex items-center gap-2 text-xs text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary-container)] transition-colors mb-2 group"
+        >
+          <span
+            class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform"
+            >arrow_back</span
+          >
           <span>Back to ICNA List</span>
         </a>
-        <h1 class="text-2xl md:text-3xl font-bold font-mono text-[var(--color-on-surface)]">Policy {{ policy().policyNumber }}</h1>
-        <p class="text-xs text-[var(--color-on-surface-variant)] mt-1">Created on {{ policy().effectiveDate }} • {{ policy().policyType }}</p>
+        <h1 class="text-2xl md:text-3xl font-bold font-mono text-[var(--color-on-surface)]">
+          Policy {{ policy().policyNumber }}
+        </h1>
+        <p class="text-xs text-[var(--color-on-surface-variant)] mt-1">
+          Created on {{ policy().effectiveDate }} • {{ policy().policyType }}
+        </p>
       </div>
 
       <div class="flex items-center gap-3">
-        <button 
-          (click)="toggleSidebar()" 
-          class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)] text-xs font-semibold transition-all cursor-pointer">
-          <span class="material-symbols-outlined text-base">{{ isSidebarOpen() ? 'dock_to_left' : 'menu' }}</span>
+        <button
+          (click)="toggleSidebar()"
+          class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)] text-xs font-semibold transition-all cursor-pointer"
+        >
+          <span class="material-symbols-outlined text-base">{{
+            isSidebarOpen() ? 'dock_to_left' : 'menu'
+          }}</span>
           <span>{{ isSidebarOpen() ? 'Collapse Menu' : 'Expand Menu' }}</span>
         </button>
 
-        <span class="bg-[var(--color-surface-container-high)] text-[var(--color-on-surface)] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-[var(--color-outline-variant)]/20">
+        <!-- <span class="bg-[var(--color-surface-container-high)] text-[var(--color-on-surface)] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-[var(--color-outline-variant)]/20">
           <span class="w-2 h-2 rounded-full bg-amber-600"></span>
           <span>{{ policy().status }}</span>
-        </span>
+        </span> -->
       </div>
     </header>
 
     <!-- Feedback Banner Messages -->
     @if (isApproved()) {
-      <div class="w-full p-4 rounded-2xl bg-emerald-50 text-emerald-800 text-sm font-semibold flex items-center justify-between border border-emerald-200 shadow-xs animate-fade-in">
+      <div
+        class="w-full p-4 rounded-2xl bg-emerald-50 text-emerald-800 text-sm font-semibold flex items-center justify-between border border-emerald-200 shadow-xs animate-fade-in"
+      >
         <div class="flex items-center gap-3">
           <span class="material-symbols-outlined text-emerald-600 text-2xl">check_circle</span>
           <span>Commission Request Accepted! Passed to CFO Authority for Payout.</span>
@@ -104,7 +144,9 @@
     }
 
     @if (isRejected()) {
-      <div class="w-full p-4 rounded-2xl bg-red-50 text-red-800 text-sm font-semibold flex items-center justify-between border border-red-200 shadow-xs animate-fade-in">
+      <div
+        class="w-full p-4 rounded-2xl bg-red-50 text-red-800 text-sm font-semibold flex items-center justify-between border border-red-200 shadow-xs animate-fade-in"
+      >
         <div class="flex items-center gap-3">
           <span class="material-symbols-outlined text-red-600 text-2xl">cancel</span>
           <span>Commission Request Rejected. Record flagged for review.</span>
@@ -115,73 +157,137 @@
 
     <!-- Redesigned Executive Layout -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      
       <!-- Card 1: Policy Information -->
-      <div class="bg-[var(--color-surface-container-lowest)] rounded-[24px] p-8 shadow-sm border border-[var(--color-outline-variant)]/30 space-y-6 flex flex-col justify-between">
+      <div
+        class="bg-[var(--color-surface-container-lowest)] rounded-[24px] p-8 shadow-sm border border-[var(--color-outline-variant)]/30 space-y-6 flex flex-col justify-between"
+      >
         <div>
-          <h3 class="text-base font-bold text-[var(--color-on-surface)] border-b border-gray-100 pb-3 mb-5">Policy & Broker Details</h3>
-          
+          <h3
+            class="text-base font-bold text-[var(--color-on-surface)] border-b border-gray-100 pb-3 mb-5"
+          >
+            Policy & Broker Details
+          </h3>
+
           <div class="space-y-4 text-xs">
             <div>
-              <p class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-0.5">Policyholder Name</p>
-              <p class="text-sm font-bold text-[var(--color-on-surface)]">{{ policy().clientName }}</p>
-              <p class="text-[11px] text-[var(--color-on-surface-variant)]">{{ policy().policyType }}</p>
+              <p
+                class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-0.5"
+              >
+                Policyholder Name
+              </p>
+              <p class="text-sm font-bold text-[var(--color-on-surface)]">
+                {{ policy().clientName }}
+              </p>
+              <p class="text-[11px] text-[var(--color-on-surface-variant)]">
+                {{ policy().policyType }}
+              </p>
             </div>
 
             <div class="pt-2 border-t border-gray-100">
-              <p class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-0.5">Intermediary Broker Agency</p>
-              <p class="text-sm font-bold text-[var(--color-on-surface)]">{{ policy().brokerName }}</p>
-              <p class="text-[11px] font-mono text-[var(--color-on-surface-variant)]">Broker ID: {{ policy().brokerId }}</p>
+              <p
+                class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-0.5"
+              >
+                Intermediary Broker Agency
+              </p>
+              <p class="text-sm font-bold text-[var(--color-on-surface)]">
+                {{ policy().brokerName }}
+              </p>
+              <p class="text-[11px] font-mono text-[var(--color-on-surface-variant)]">
+                Broker ID: {{ policy().brokerId }}
+              </p>
             </div>
 
             <div class="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
               <div>
-                <p class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-0.5">Policy Effective Date</p>
-                <p class="text-sm font-bold text-[var(--color-on-surface)]">{{ policy().effectiveDate }}</p>
+                <p
+                  class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-0.5"
+                >
+                  Policy Effective Date
+                </p>
+                <p class="text-sm font-bold text-[var(--color-on-surface)]">
+                  {{ policy().effectiveDate }}
+                </p>
               </div>
 
               <div>
-                <p class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-0.5">Risk Location</p>
-                <p class="text-sm font-bold text-[var(--color-on-surface)]">{{ policy().riskLocation }}</p>
+                <p
+                  class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-0.5"
+                >
+                  Cover Type
+                </p>
+                <p class="text-sm font-bold text-[var(--color-on-surface)]">
+                  {{ policy().riskLocation }}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="pt-6 border-t border-gray-100 text-[11px] text-[var(--color-on-surface-variant)]">
-          Temporary Policy Reference: <strong class="font-mono text-[var(--color-on-surface)]">{{ policy().policyNumber }}</strong>
+        <div
+          class="pt-6 border-t border-gray-100 text-[11px] text-[var(--color-on-surface-variant)]"
+        >
+          Temporary Policy Reference:
+          <strong class="font-mono text-[var(--color-on-surface)]">{{
+            policy().policyNumber
+          }}</strong>
         </div>
       </div>
 
       <!-- Card 2: Financial & Beneficiary NUBAN Details -->
-      <div class="bg-[var(--color-surface-container-lowest)] rounded-[24px] p-8 shadow-sm border border-[var(--color-outline-variant)]/30 space-y-6 flex flex-col justify-between">
+      <div
+        class="bg-[var(--color-surface-container-lowest)] rounded-[24px] p-8 shadow-sm border border-[var(--color-outline-variant)]/30 space-y-6 flex flex-col justify-between"
+      >
         <div class="space-y-6">
-          <h3 class="text-base font-bold text-[var(--color-on-surface)] border-b border-gray-100 pb-3">Financial & Payout Details</h3>
+          <h3
+            class="text-base font-bold text-[var(--color-on-surface)] border-b border-gray-100 pb-3"
+          >
+            Financial & Payout Details
+          </h3>
 
           <div>
-            <p class="text-[11px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-1">Commission Value</p>
+            <p
+              class="text-[11px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-1"
+            >
+              Commission Value
+            </p>
             <div class="flex items-baseline gap-1 text-emerald-700 font-mono">
               <span class="text-2xl font-medium">₦</span>
-              <span class="text-4xl md:text-5xl font-bold tracking-tight">{{ policy().commissionAmount }}</span>
+              <span class="text-4xl md:text-5xl font-bold tracking-tight">{{
+                policy().commissionAmount
+              }}</span>
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100 text-xs">
             <div>
-              <span class="text-[var(--color-on-surface-variant)] block text-[11px]">Gross Policy Premium</span>
-              <span class="text-[var(--color-on-surface)] font-bold font-mono text-sm">₦ {{ policy().grossPremium }}</span>
+              <span class="text-[var(--color-on-surface-variant)] block text-[11px]"
+                >Gross Policy Premium</span
+              >
+              <span class="text-[var(--color-on-surface)] font-bold font-mono text-sm"
+                >₦ {{ policy().grossPremium }}</span
+              >
             </div>
             <div>
-              <span class="text-[var(--color-on-surface-variant)] block text-[11px]">Commission Rate</span>
-              <span class="text-[var(--color-on-surface)] font-bold text-sm">{{ policy().commissionRate }}</span>
+              <span class="text-[var(--color-on-surface-variant)] block text-[11px]"
+                >Commission Rate</span
+              >
+              <span class="text-[var(--color-on-surface)] font-bold text-sm">{{
+                policy().commissionRate
+              }}</span>
             </div>
           </div>
 
           <!-- NUBAN Details -->
-          <div class="bg-[var(--color-surface-container-low)] rounded-2xl p-4 space-y-3 border border-[var(--color-outline-variant)]/20">
+          <div
+            class="bg-[var(--color-surface-container-low)] rounded-2xl p-4 space-y-3 border border-[var(--color-outline-variant)]/20"
+          >
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-[var(--color-on-surface)]">NUBAN Beneficiary Details</span>
-              <div class="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              <span class="text-xs font-bold text-[var(--color-on-surface)]"
+                >NUBAN Beneficiary Details</span
+              >
+              <div
+                class="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200"
+              >
                 <span class="material-symbols-outlined text-xs">verified</span>
                 <span class="text-[10px] font-bold uppercase">NIBSS Verified</span>
               </div>
@@ -190,15 +296,21 @@
             <div class="space-y-1.5 text-xs">
               <div class="flex justify-between">
                 <span class="text-[var(--color-on-surface-variant)]">Bank:</span>
-                <span class="font-bold text-[var(--color-on-surface)]">{{ policy().bankName }}</span>
+                <span class="font-bold text-[var(--color-on-surface)]">{{
+                  policy().bankName
+                }}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-[var(--color-on-surface-variant)]">Account Number:</span>
-                <span class="font-bold font-mono text-[var(--color-on-surface)]">{{ policy().accountNumber }}</span>
+                <span class="font-bold font-mono text-[var(--color-on-surface)]">{{
+                  policy().accountNumber
+                }}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-[var(--color-on-surface-variant)]">Account Name:</span>
-                <span class="font-bold text-[var(--color-on-surface)]">{{ policy().accountName }}</span>
+                <span class="font-bold text-[var(--color-on-surface)]">{{
+                  policy().accountName
+                }}</span>
               </div>
             </div>
           </div>
@@ -206,25 +318,96 @@
 
         <!-- Accept / Reject Actions -->
         <div class="pt-6 border-t border-gray-100 flex items-center gap-4">
-          <button 
+          <button
             (click)="onReject()"
             [disabled]="isApproved() || isRejected()"
-            class="flex-1 py-3.5 px-4 rounded-[24px] bg-red-50 text-red-700 font-semibold text-xs border border-red-200 hover:bg-red-100 transition-all disabled:opacity-40 uppercase tracking-wider cursor-pointer">
+            class="flex-1 py-3.5 px-4 rounded-[24px] bg-red-50 text-red-700 font-semibold text-xs border border-red-200 hover:bg-red-100 transition-all disabled:opacity-40 uppercase tracking-wider cursor-pointer"
+          >
             Reject Commission
           </button>
 
-          <button 
+          <button
             (click)="onAccept()"
             [disabled]="isApproved() || isRejected()"
-            class="flex-1 py-3.5 px-4 rounded-[24px] bg-[var(--color-primary-container)] text-white font-semibold text-xs hover:bg-[var(--color-primary)] transition-all shadow-md disabled:opacity-40 flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer">
+            class="flex-1 py-3.5 px-4 rounded-[24px] bg-[var(--color-primary-container)] text-white font-semibold text-xs hover:bg-[var(--color-primary)] transition-all shadow-md disabled:opacity-40 flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer"
+          >
             <span class="material-symbols-outlined text-base">check_circle</span>
             <span>Accept Commission</span>
           </button>
         </div>
-
       </div>
-
     </div>
-
   </main>
+
+  @if (decisionModalOpen) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4">
+      <div
+        class="w-full max-w-lg rounded-[28px] bg-white p-6 shadow-2xl border border-[var(--color-outline-variant)]/20"
+      >
+        <div class="flex items-start justify-between gap-3 mb-5">
+          <div>
+            <p
+              class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-on-surface-variant)]"
+            >
+              {{ decisionAction === 'approve' ? 'Approve' : 'Reject' }} commission
+            </p>
+            <h3 class="text-xl font-bold text-[var(--color-on-surface)] mt-1">
+              {{ decisionAction === 'approve' ? 'Approval Comment' : 'Rejection Reason' }}
+            </h3>
+          </div>
+          <button
+            type="button"
+            (click)="closeDecisionModal()"
+            class="p-2 rounded-full text-[var(--color-secondary)] hover:bg-gray-100 transition-colors cursor-pointer"
+            aria-label="Close decision modal"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <label
+            class="block text-xs font-semibold uppercase tracking-wider text-[var(--color-on-surface-variant)]"
+          >
+            Comment
+          </label>
+          <textarea
+            [(ngModel)]="approverComment"
+            rows="5"
+            placeholder="Add the approval or rejection reason here..."
+            class="w-full rounded-2xl border border-[var(--color-outline-variant)]/30 bg-[var(--color-surface-container)] px-4 py-3 text-sm text-[var(--color-on-surface)] outline-none focus:ring-2 focus:ring-[var(--color-primary-container)]/30"
+          ></textarea>
+
+          @if (decisionError) {
+            <div
+              class="rounded-xl bg-red-50 text-red-700 border border-red-200 px-3 py-2 text-xs font-semibold"
+            >
+              {{ decisionError }}
+            </div>
+          }
+
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              (click)="closeDecisionModal()"
+              class="px-4 py-2.5 rounded-[20px] bg-[var(--color-surface-container)] text-[var(--color-on-surface)] text-xs font-semibold hover:bg-[var(--color-surface-container-high)] transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              (click)="submitDecision()"
+              class="px-4 py-2.5 rounded-[20px] {{
+                decisionAction === 'approve'
+                  ? 'bg-[var(--color-primary-container)] text-white'
+                  : 'bg-red-600 text-white'
+              }} text-xs font-semibold hover:opacity-95 transition-colors cursor-pointer"
+            >
+              {{ decisionAction === 'approve' ? 'Submit Approval' : 'Submit Rejection' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>

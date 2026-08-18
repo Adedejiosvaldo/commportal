@@ -1,42 +1,81 @@
-<div class="h-full flex items-center justify-center p-container-padding-mobile md:p-container-padding-desktop bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] min-h-screen">
+<div
+  class="h-full flex items-center justify-center p-container-padding-mobile md:p-container-padding-desktop bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] min-h-screen"
+>
   <div class="w-full max-w-md my-auto">
-    
     <!-- Brand Header -->
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center p-3 bg-white rounded-2xl shadow-xs mb-3 border border-[var(--color-outline-variant)]/30">
-        <img src="/assets/zgic_logo.webp" alt="ZGIC Logo" class="h-10 w-auto object-contain" onerror="this.onerror=null; this.src='/assets/zgic_logo.png';" />
+      <div
+        class="inline-flex items-center justify-center p-3 bg-white rounded-2xl shadow-xs mb-3 border border-[var(--color-outline-variant)]/30"
+      >
+        <img
+          src="assets/zgic_logo.webp"
+          alt="ZGIC Logo"
+          class="h-10 w-auto object-contain"
+          onerror="
+            this.onerror = null;
+            this.src = 'assets/zgic_logo.png';
+          "
+        />
       </div>
-      <p class="text-xs font-bold uppercase tracking-wider text-[var(--color-on-surface-variant)] mb-1">Zenith General Insurance</p>
+      <!-- <p
+        class="text-xs font-bold uppercase tracking-wider text-[var(--color-on-surface-variant)] mb-1"
+      >
+        Zenith General Insurance
+      </p> -->
       <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary)] tracking-tight">
         Staff Portal
       </h1>
     </div>
 
     <!-- Single Staff Login Card -->
-    <div class="bg-[var(--color-surface-container-lowest)] rounded-[24px] p-8 md:p-10 shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-[var(--color-outline-variant)]/20">
-      
+    <div
+      class="bg-[var(--color-surface-container-lowest)] rounded-[24px] p-8 md:p-10 shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-[var(--color-outline-variant)]/20"
+    >
       <!-- Card Title -->
       <div class="text-center mb-6">
         <p class="body-md font-semibold text-[var(--color-secondary)]">Staff Authentication</p>
       </div>
 
       <form (submit)="onAuthenticate($event)" class="space-y-6">
-        
+        @if (loginError()) {
+          <div
+            class="flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700"
+          >
+            <span class="material-symbols-outlined text-sm">error</span>
+            <span>{{ loginError() }}</span>
+          </div>
+        }
+
         <!-- Corporate ID -->
         <div>
-          <label class="block label-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-2 font-semibold text-xs" for="corporate-id">
-            Corporate Email
+          <label
+            class="block label-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-2 font-semibold text-xs"
+            for="corporate-id"
+          >
+            Username
           </label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--color-secondary)]">
-              <svg class="w-5 h-5 text-[var(--color-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            <div
+              class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--color-secondary)]"
+            >
+              <svg
+                class="w-5 h-5 text-[var(--color-secondary)]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
               </svg>
             </div>
-            <input 
-              id="corporate-id" 
-              name="corporate-id" 
-              type="email" 
+            <input
+              id="corporate-id"
+              name="corporate-id"
+              type="email"
               required
               [(ngModel)]="corporateId"
               placeholder="firstname.lastname@zenith.com"
@@ -47,35 +86,71 @@
 
         <!-- Security Code -->
         <div>
-          <label class="block label-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-2 font-semibold text-xs" for="security-code">
-            Security Code / PIN
+          <label
+            class="block label-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider mb-2 font-semibold text-xs"
+            for="security-code"
+          >
+            PIN + OTP
           </label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--color-secondary)]">
-              <svg class="w-5 h-5 text-[var(--color-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            <div
+              class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--color-secondary)]"
+            >
+              <svg
+                class="w-5 h-5 text-[var(--color-secondary)]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
               </svg>
             </div>
-            <input 
-              id="security-code" 
-              name="security-code" 
+            <input
+              id="security-code"
+              name="security-code"
               [type]="showCode() ? 'text' : 'password'"
               required
               [(ngModel)]="securityCode"
               placeholder="••••••••"
               class="block w-full pl-11 pr-11 py-3 bg-[var(--color-surface-container)] rounded-[24px] border-0 text-[var(--color-on-surface)] focus:ring-2 focus:ring-gray-300 transition-all outline-none text-sm font-medium"
             />
-            <button 
-              type="button" 
+            <button
+              type="button"
               (click)="showCode.set(!showCode())"
               class="absolute inset-y-0 right-0 pr-4 flex items-center text-[var(--color-secondary)] hover:text-[var(--color-primary-container)] transition-colors cursor-pointer"
-              title="Toggle code visibility">
-              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              title="Toggle code visibility"
+            >
+              <svg
+                class="w-5 h-5 text-gray-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 @if (showCode()) {
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.025 10.025 0 013.682-.693c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21M3 3l18 18"/>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.025 10.025 0 013.682-.693c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21M3 3l18 18"
+                  />
                 } @else {
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
                 }
               </svg>
             </button>
@@ -84,15 +159,14 @@
 
         <!-- Submit Button -->
         <div class="pt-2">
-          <button 
-            type="submit" 
-            class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-[24px] shadow-sm font-semibold text-xs text-white bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] transition-colors uppercase tracking-wider cursor-pointer">
-            Authenticate & Proceed
+          <button
+            type="submit"
+            class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-[24px] shadow-sm font-semibold text-xs text-white bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] transition-colors uppercase tracking-wider cursor-pointer"
+          >
+            Login
           </button>
         </div>
-
       </form>
     </div>
-
   </div>
 </div>

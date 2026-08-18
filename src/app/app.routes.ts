@@ -7,17 +7,18 @@ import { IcnaDashboardComponent } from './components/icna-dashboard/icna-dashboa
 import { CfoDashboardComponent } from './components/cfo-dashboard/cfo-dashboard.component';
 import { PolicyDetailsComponent } from './components/policy-details/policy-details.component';
 import { DesignGuideComponent } from './components/design-guide/design-guide.component';
+import { cfoAccessGuard, claimAccessGuard, icnaAccessGuard } from './guards/staff-access.guard';
 
 export const routes: Routes = [
   { path: '', component: BrokerLoginComponent },
   { path: 'broker-login', component: BrokerLoginComponent },
+  { path: 'claim', component: ClaimSubmissionComponent, canActivate: [claimAccessGuard] },
   { path: 'staff', component: StaffLoginComponent },
   { path: 'staff-login', component: StaffLoginComponent },
   { path: 'policy-lookup', component: PolicyLookupComponent },
-  { path: 'claim', component: ClaimSubmissionComponent },
-  { path: 'icna-dashboard', component: IcnaDashboardComponent },
-  { path: 'policy-details', component: PolicyDetailsComponent },
-  { path: 'cfo-dashboard', component: CfoDashboardComponent },
+  { path: 'icna-dashboard', component: IcnaDashboardComponent, canActivate: [icnaAccessGuard] },
+  { path: 'policy-details', component: PolicyDetailsComponent, canActivate: [icnaAccessGuard] },
+  { path: 'cfo-dashboard', component: CfoDashboardComponent, canActivate: [cfoAccessGuard] },
   { path: 'design-guide', component: DesignGuideComponent },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];

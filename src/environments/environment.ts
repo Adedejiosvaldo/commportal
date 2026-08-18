@@ -1,0 +1,27 @@
+export const environment = {
+  production: false,
+  mode: 'testing',
+  useMockBankData: true,
+  apiBaseUrl: 'http://localhost:4200/mock',
+  staffAuthEndpoint: 'http://172.18.13.18/ZGICHRLeavePortal/api/Token',
+  staffAuthMode: 'mock' as 'mock' | 'live',
+  // devDepartmentOverride: 'ICNA' as 'ICNA' | 'Finance' | null,
+  // devDepartmentOverride: 'null',
+  devDepartmentOverride: null as 'ICNA' | 'Finance' | null,
+  mockStaffAuthResponse: {
+    code: 200,
+    message: 'Successful',
+    data: {
+      userName: 'Joseph.Adewunmi',
+      userDept: 'InfoTech',
+      userEmail: 'Joseph.Adewunmi@zenithinsurance.com.ng',
+      staffNumber: 'ZI20260002',
+      phoneNumber: '07053728566',
+      userBranch: 'HEAD OFFICE',
+      enable: true,
+      roles: ['ICNA'],
+      token: 'dev-token-for-local-testing',
+      approverList: [],
+    },
+  },
+};

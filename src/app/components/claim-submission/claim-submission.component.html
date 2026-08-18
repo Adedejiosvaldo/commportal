@@ -1,100 +1,176 @@
-<div class="min-h-screen bg-[var(--color-background)] text-[var(--color-on-background)] flex flex-col font-body-md">
-  
+<div
+  class="min-h-screen bg-[var(--color-background)] text-[var(--color-on-background)] flex flex-col font-body-md"
+>
   <!-- Header (Clean header without top back button) -->
-  <header class="w-full py-5 px-6 lg:px-12 flex items-center justify-center md:justify-start border-b border-[var(--color-outline-variant)]/20 glass-nav">
+  <header
+    class="w-full py-5 px-6 lg:px-12 flex items-center justify-center md:justify-start border-b border-[var(--color-outline-variant)]/20 glass-nav"
+  >
     <div class="flex items-center gap-3">
-      <img src="/assets/zgic_logo.webp" alt="ZGIC Logo" class="h-8 w-auto object-contain" onerror="this.onerror=null; this.src='/assets/zgic_logo.png';" />
+      <img
+        src="assets/zgic_logo.webp"
+        alt="ZGIC Logo"
+        class="h-8 w-auto object-contain"
+        onerror="
+          this.onerror = null;
+          this.src = 'assets/zgic_logo.png';
+        "
+      />
       <div>
-        <span class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase block">Zenith General Insurance</span>
-        <span class="text-xs font-bold text-[var(--color-on-surface)] leading-tight">Commission Portal</span>
+        <!-- <span class="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase block"
+          >Zenith General Insurance</span
+        > -->
+        <span class="text-xs font-bold text-[var(--color-on-surface)] leading-tight"
+          >Commission Portal</span
+        >
       </div>
     </div>
   </header>
 
   <main class="w-full max-w-lg mx-auto px-4 sm:px-6 pt-8 pb-20">
-    
     <!-- Body Back Button -->
     <div class="mb-4">
-      <a routerLink="/policy-lookup" class="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--color-secondary)] hover:text-[var(--color-primary-container)] transition-colors">
+      <a
+        routerLink="/policy-lookup"
+        class="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--color-secondary)] hover:text-[var(--color-primary-container)] transition-colors"
+      >
         <span class="material-symbols-outlined text-sm">arrow_back</span>
         <span>Back to Policy Lookup</span>
       </a>
     </div>
 
     <!-- Main Card -->
-    <div class="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 sm:p-8 shadow-md border border-[var(--color-outline-variant)]/30 space-y-6">
-      
+    <div
+      class="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 sm:p-8 shadow-md border border-[var(--color-outline-variant)]/30 space-y-6"
+    >
       <div class="text-center space-y-2">
-        <div class="mx-auto w-14 h-14 bg-[var(--color-primary-fixed)] rounded-2xl flex items-center justify-center text-[var(--color-primary-container)]">
+        <div
+          class="mx-auto w-14 h-14 bg-[var(--color-primary-fixed)] rounded-2xl flex items-center justify-center text-[var(--color-primary-container)]"
+        >
           <span class="material-symbols-outlined text-3xl">payments</span>
         </div>
         <h1 class="text-2xl font-bold text-[var(--color-on-surface)]">Claim Commission</h1>
-        <p class="text-xs text-[var(--color-on-surface-variant)]">Enter your banking details to receive your funds securely.</p>
+        <p class="text-xs text-[var(--color-on-surface-variant)]">
+          Enter your banking details to receive your funds securely.
+        </p>
       </div>
 
       <!-- Currency Display Area -->
-      <div class="bg-[var(--color-surface-container-low)] rounded-2xl p-6 text-center space-y-1 border border-[var(--color-outline-variant)]/20">
-        <p class="label-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider text-xs">Available Commission</p>
+      <div
+        class="bg-[var(--color-surface-container-low)] rounded-2xl p-6 text-center space-y-1 border border-[var(--color-outline-variant)]/20"
+      >
+        <p class="label-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider text-xs">
+          Available Commission
+        </p>
         <div class="flex items-baseline justify-center gap-1 text-emerald-700">
           <span class="text-xl font-medium">₦</span>
-          <span class="text-4xl font-bold tracking-tight font-mono">1,250,000</span>
+          <span class="text-4xl font-bold tracking-tight font-mono">
+            {{ availableCommission() | number: '1.0-0' }}
+          </span>
         </div>
       </div>
 
       <!-- Form -->
       <form (submit)="onProcessClaim($event)" class="space-y-5">
-        
         <div>
-          <label class="block label-sm text-[var(--color-on-surface-variant)] uppercase mb-2 ml-1 text-xs" for="bank">Select Bank</label>
+          <label
+            class="block label-sm text-[var(--color-on-surface-variant)] uppercase mb-2 ml-1 text-xs"
+            for="bank"
+            >Select Bank</label
+          >
           <div class="relative">
-            <select 
-              id="bank" 
-              [(ngModel)]="selectedBank" 
+            <select
+              id="bank"
+              [(ngModel)]="selectedBankCode"
               name="bank"
               required
-              class="w-full bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)]/30 rounded-2xl py-3 px-4 text-sm text-[var(--color-on-surface)] appearance-none outline-none focus:ring-2 focus:ring-[var(--color-primary-container)]/20 cursor-pointer">
+              (change)="onBankChange()"
+              class="w-full bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)]/30 rounded-2xl py-3 px-4 text-sm text-[var(--color-on-surface)] appearance-none outline-none focus:ring-2 focus:ring-[var(--color-primary-container)]/20 cursor-pointer"
+            >
               <option value="" disabled selected>Choose your bank...</option>
-              <option value="zenith">Zenith Bank Plc</option>
-              <option value="gtb">Guaranty Trust Bank (GTB)</option>
-              <option value="access">Access Bank</option>
-              <option value="first">First Bank of Nigeria</option>
-              <option value="uba">United Bank for Africa (UBA)</option>
+              @for (bank of banks(); track bank.bankCode) {
+                <option [value]="bank.bankCode">{{ bank.bankName }}</option>
+              }
             </select>
-            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-on-surface-variant)] pointer-events-none">expand_more</span>
+            <span
+              class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-on-surface-variant)] pointer-events-none"
+              >expand_more</span
+            >
           </div>
         </div>
 
         <div>
-          <label class="block label-sm text-[var(--color-on-surface-variant)] uppercase mb-2 ml-1 text-xs" for="accountNumber">Account Number</label>
-          <input 
-            id="accountNumber" 
+          <label
+            class="block label-sm text-[var(--color-on-surface-variant)] uppercase mb-2 ml-1 text-xs"
+            for="accountNumber"
+            >Account Number</label
+          >
+          <input
+            id="accountNumber"
             name="accountNumber"
-            type="text" 
-            maxlength="10" 
+            type="text"
+            maxlength="10"
             [(ngModel)]="accountNumber"
             (input)="onAccountInput()"
-            placeholder="10-digit account number" 
+            placeholder="10-digit account number"
             class="w-full bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)]/30 rounded-2xl py-3 px-4 text-sm text-[var(--color-on-surface)] outline-none focus:ring-2 focus:ring-[var(--color-primary-container)]/20 font-mono"
           />
         </div>
 
-        @if (accountVerified()) {
-          <div class="p-3 rounded-xl bg-emerald-50 text-emerald-800 text-xs font-semibold flex items-center justify-between animate-fade-in border border-emerald-200">
+        @if (validationMessage()) {
+          <div
+            class="p-3 rounded-xl text-xs font-semibold flex items-center justify-between animate-fade-in border"
+            [ngClass]="
+              accountVerified()
+                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                : 'bg-red-50 text-red-700 border-red-200'
+            "
+          >
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-sm text-emerald-600">verified</span>
-              <span>Account Name: <strong>Oluwaseun Adeyemi</strong></span>
+              <span
+                class="material-symbols-outlined text-sm"
+                [ngClass]="accountVerified() ? 'text-emerald-600' : 'text-red-600'"
+              >
+                {{ accountVerified() ? 'verified' : 'error' }}
+              </span>
+              <span>
+                @if (accountVerified()) {
+                  Account Name: <strong>{{ matchedAccountName() }}</strong>
+                } @else {
+                  {{ validationMessage() }}
+                }
+              </span>
             </div>
-            <span class="text-[10px] uppercase font-bold text-emerald-700">Verified</span>
+            <span
+              class="text-[10px] uppercase font-bold"
+              [ngClass]="accountVerified() ? 'text-emerald-700' : 'text-red-700'"
+            >
+              {{ accountVerified() ? 'Verified' : 'Check' }}
+            </span>
           </div>
         }
 
         <div class="pt-4 space-y-3">
-          <button 
+          <button
             type="submit"
-            [disabled]="isProcessing()"
-            class="w-full py-4 rounded-2xl bg-[var(--color-primary-container)] text-white text-sm font-semibold hover:bg-[var(--color-primary)] shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
+            [disabled]="isProcessing() || !accountVerified()"
+            class="w-full py-4 rounded-2xl bg-[var(--color-primary-container)] text-white text-sm font-semibold hover:bg-[var(--color-primary)] shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             @if (isProcessing()) {
-              <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
               <span>Processing Payout...</span>
             } @else {
               <span>Process Claim</span>
@@ -102,38 +178,46 @@
             }
           </button>
 
-          <a routerLink="/policy-lookup" class="block w-full py-3 text-center text-xs font-semibold text-[var(--color-secondary)] hover:bg-[var(--color-surface-container-high)] rounded-2xl transition-colors">
+          <a
+            routerLink="/policy-lookup"
+            class="block w-full py-3 text-center text-xs font-semibold text-[var(--color-secondary)] hover:bg-[var(--color-surface-container-high)] rounded-2xl transition-colors"
+          >
             Cancel
           </a>
         </div>
-
       </form>
     </div>
-
   </main>
 
   <!-- SUCCESS POPUP OVERLAY -->
   @if (isSuccessModalOpen()) {
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
-      <div class="relative bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl space-y-5 border border-[var(--color-outline-variant)]/30">
-        <div class="mx-auto w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 shadow-xs border border-emerald-200">
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in"
+    >
+      <div
+        class="relative bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl space-y-5 border border-[var(--color-outline-variant)]/30"
+      >
+        <div
+          class="mx-auto w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 shadow-xs border border-emerald-200"
+        >
           <span class="material-symbols-outlined text-4xl">check_circle</span>
         </div>
-        
+
         <h2 class="text-2xl font-bold text-[var(--color-on-surface)]">Claim Successful</h2>
-        
+
         <p class="text-xs text-[var(--color-on-surface-variant)] leading-relaxed">
-          Commission claimed successfully by <strong class="text-[var(--color-on-surface)]">Oluwaseun Adeyemi</strong>. <br/>
-          Ref: <strong>ZN-CLM-{{ claimRef() }}</strong>. Funds will reflect shortly.
+          Your commission claim was successful. <br />
+          Payout would be made shortly. <br />
+          Ref: <strong>ZN-CLM-{{ claimRef() }}</strong>
         </p>
 
-        <button 
+        <button
           (click)="closeSuccessModal()"
-          class="w-full py-3.5 rounded-2xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] text-xs font-bold hover:bg-[var(--color-surface-container)] transition-colors cursor-pointer">
+          class="w-full py-3.5 rounded-2xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] text-xs font-bold hover:bg-[var(--color-surface-container)] transition-colors cursor-pointer"
+        >
           Return to Dashboard
         </button>
       </div>
     </div>
   }
-
 </div>

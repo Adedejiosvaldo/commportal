@@ -1,24 +1,49 @@
 import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+
+import { CommissionRecord, CommissionService } from '../../../services/commission.service';
+import { LookupState, LookupStateService } from '../../../services/lookup-state.service';
+import { normalizeGuid } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-policy-lookup',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './policy-lookup.component.html'
+  templateUrl: './policy-lookup.component.html',
+  providers: [DatePipe],
 })
 export class PolicyLookupComponent {
   protected searchQuery = '';
   protected hasSearched = signal<boolean>(false);
   protected validationError = signal<string | null>(null);
   protected searchState = signal<'active' | 'claimed' | 'empty'>('active');
+  protected isLoading = signal<boolean>(false);
 
-  protected activePolicyNumber = signal<string>('ZG/TP/1000/84920/01');
-  protected activePolicyAmount = signal<string>('1,250,000');
-  protected activePolicyHolder = signal<string>('Dangote Logistics Corp');
-  protected activeIssueDate = signal<string>('Jan 15, 2026');
+  protected activePolicyNumber = signal<string>('');
+  protected activePolicyAmount = signal<string>('0');
+  protected activePolicyHolder = signal<string>('');
+  protected activeIssueDate = signal<string>('');
+  protected activeAccountOfficer = signal<string>('');
+
+  constructor(
+    private commisionService: CommissionService,
+    private lookupState: LookupStateService,
+    private router: Router,
+  ) {
+    const previous = this.lookupState.get();
+    if (previous) {
+      this.searchQuery = previous.query;
+      this.hasSearched.set(true);
+      this.searchState.set(previous.amount === '0' ? 'claimed' : 'active');
+      this.activePolicyNumber.set(previous.policyNumber);
+      this.activePolicyHolder.set(previous.holder);
+      this.activePolicyAmount.set(previous.amount);
+      this.activeIssueDate.set(previous.issueDate);
+      this.activeAccountOfficer.set(previous.accountOfficer);
+    }
+  }
 
   protected onInput() {
     if (this.validationError()) {
@@ -30,56 +55,183 @@ export class PolicyLookupComponent {
     this.searchQuery = '';
     this.hasSearched.set(false);
     this.validationError.set(null);
+    this.isLoading.set(false);
+    this.searchState.set('active');
+    this.activePolicyNumber.set('');
+    this.activePolicyHolder.set('');
+    this.activePolicyAmount.set('0');
+    this.activeIssueDate.set('');
+    this.activeAccountOfficer.set('');
+    this.lookupState.clear();
+  }
+
+  protected logout() {
+    sessionStorage.removeItem('staffSession');
+    sessionStorage.removeItem('activeQueue');
+    sessionStorage.removeItem('approverQueue');
+    sessionStorage.removeItem('lookupState');
+    this.lookupState.clear();
+    this.router.navigate(['/']);
   }
 
   protected onSearch() {
     const rawQuery = this.searchQuery.trim();
     const query = rawQuery.toUpperCase();
 
-    // 1. Validation: Can't search if nothing is inputted
     if (!query) {
       this.validationError.set('Please enter a temporary policy number before searching.');
       this.hasSearched.set(false);
       return;
     }
 
-    // 2. Validation: Must start with ZG/TP/1000/ followed by one or more number segments (/x/x/x...)
     const policyPattern = /^ZG\/TP\/1000(\/\d+)+$/i;
     const isValidFormat = policyPattern.test(query);
 
     if (!isValidFormat) {
-      this.validationError.set('Invalid policy format! Must start with ZG/TP/1000/ followed by number segments (e.g., ZG/TP/1000/84920 or ZG/TP/1000/84920/01).');
+      this.validationError.set(
+        'Invalid policy format! Must start with ZG/TP/1000/ followed by number segments (e.g., ZG/TP/1000/84920 or ZG/TP/1000/84920/01).',
+      );
       this.hasSearched.set(false);
       return;
     }
 
-    // Clear error & display search results
     this.validationError.set(null);
-    this.hasSearched.set(true);
+    this.hasSearched.set(false);
+    this.isLoading.set(true);
+    this.searchState.set('active');
+    this.activePolicyNumber.set(query);
+    this.activePolicyHolder.set('');
+    this.activePolicyAmount.set('0');
+    this.activeIssueDate.set('');
+    this.activeAccountOfficer.set('');
+    this.lookupState.clear();
 
-    if (query.endsWith('/00') || query.endsWith('/000') || query.includes('CLAIM')) {
-      this.searchState.set('claimed');
-      this.activePolicyNumber.set(query);
-    } else if (query.endsWith('/99') || query.endsWith('/999') || query.includes('NOTFOUND')) {
-      this.searchState.set('empty');
-      this.activePolicyNumber.set(query);
-    } else {
-      this.searchState.set('active');
-      this.activePolicyNumber.set(query);
+    const brokerId = this.getBrokerUserId();
 
-      if (query.includes('91042')) {
-        this.activePolicyAmount.set('5,760,000');
-        this.activePolicyHolder.set('Oceanic Marine Services');
-        this.activeIssueDate.set('Feb 01, 2026');
-      } else if (query.includes('30219')) {
-        this.activePolicyAmount.set('840,000');
-        this.activePolicyHolder.set('MainOne Data Center');
-        this.activeIssueDate.set('Mar 10, 2026');
-      } else {
-        this.activePolicyAmount.set('1,250,000');
-        this.activePolicyHolder.set('Dangote Logistics Corp');
-        this.activeIssueDate.set('Jan 15, 2026');
-      }
+    this.commisionService.searchCommissionByPolicyNumber(query, brokerId).subscribe({
+      next: (response) => {
+        const policy = response?.data?.[0] as CommissionRecord | undefined;
+
+        if (!response?.data || response.data.length === 0 || !policy) {
+          const lookupMessage = String(response?.message ?? '');
+
+          if (/not yet settled/i.test(lookupMessage)) {
+            this.setFailureState(
+              'This credit note has not been settled and is not ready for commission processing.',
+            );
+            return;
+          }
+
+          this.setFailureState(
+            `No temporary policy found for ${query}. Please verify the policy number and try again.`,
+          );
+          return;
+        }
+
+        const policyNumber = policy.tempPolicyNumber ?? query;
+        const accountOfficer = String(policy.accountOfficer ?? 'Joseph Adewunmi');
+        const commissionAmount = Number(policy.commissionAmount ?? 0);
+        const formattedAmount = Number.isFinite(commissionAmount)
+          ? this.formatCurrency(commissionAmount)
+          : '0';
+        const issueDate = policy.dateCreated
+          ? this.formatDate(new Date(policy.dateCreated))
+          : 'N/A';
+
+        const lookupState: LookupState = {
+          query,
+          policyNumber,
+          holder: policy.clientName ?? 'Unknown client',
+          amount: formattedAmount,
+          issueDate,
+          wkfId: policy.wkf,
+          accountOfficer,
+          id: policy.id,
+          requestDataId: policy.requestDataId ?? policy.id ?? 0,
+        };
+
+        this.lookupState.set(lookupState);
+
+        const isClaimed = policy.wkf === '1' || policy.wkf === '2' || policy.wkf === '3';
+        // const isClaimed = String(policy.wkf ?? '').trim() === '1' ;
+
+        if (isClaimed) {
+          this.hasSearched.set(true);
+          this.searchState.set('claimed');
+          this.activePolicyNumber.set(policyNumber);
+          this.activePolicyHolder.set(lookupState.holder);
+          this.activeAccountOfficer.set(accountOfficer);
+          this.activePolicyAmount.set('0');
+          this.activeIssueDate.set(issueDate);
+          this.isLoading.set(false);
+          return;
+        }
+
+        this.hasSearched.set(true);
+        this.searchState.set('active');
+        this.activePolicyNumber.set(policyNumber);
+        this.activePolicyHolder.set(lookupState.holder);
+        this.activeAccountOfficer.set(accountOfficer);
+        this.activePolicyAmount.set(formattedAmount);
+        this.activeIssueDate.set(issueDate);
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Policy lookup failed', error);
+        const backendMessage = String(error?.error?.message ?? error?.message ?? '');
+
+        if (/not yet settled/i.test(backendMessage)) {
+          this.setFailureState(
+            'This policy has not been settled yet and is not ready for claim processing.',
+          );
+          return;
+        }
+
+        this.setFailureState(
+          'Unable to load commission details for this policy number. Please try again.',
+        );
+      },
+    });
+  }
+
+  private getBrokerUserId(): string {
+    const rawSession = sessionStorage.getItem('brokerSession');
+    if (!rawSession) {
+      return '';
     }
+
+    try {
+      const session = JSON.parse(rawSession);
+      return normalizeGuid(
+        String(session?.userId ?? session?.userID ?? session?.brokerId ?? session?.id ?? ''),
+      );
+    } catch {
+      return '';
+    }
+  }
+
+  private setFailureState(message: string) {
+    this.hasSearched.set(false);
+    this.searchState.set('empty');
+    this.activePolicyHolder.set('');
+    this.activePolicyAmount.set('0');
+    this.activeIssueDate.set('');
+    this.validationError.set(message);
+    this.isLoading.set(false);
+  }
+
+  private formatCurrency(value: number): string {
+    return new Intl.NumberFormat('en-NG', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
+
+  private formatDate(value: Date): string {
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }).format(value);
   }
 }

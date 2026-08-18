@@ -1,41 +1,57 @@
-<div class="min-h-screen bg-[var(--color-background)] text-[var(--color-on-background)] flex font-body-md relative">
-  
+<div
+  class="min-h-screen bg-[var(--color-background)] text-[var(--color-on-background)] flex font-body-md relative"
+>
   <!-- Floating Open Sidebar Trigger (Visible when Sidebar is Closed) -->
   @if (!isSidebarOpen()) {
-    <button 
-      (click)="toggleSidebar()" 
+    <button
+      (click)="toggleSidebar()"
       class="fixed top-4 left-4 z-50 p-2.5 rounded-2xl bg-white shadow-md border border-[var(--color-outline-variant)]/30 text-[var(--color-primary-container)] hover:bg-gray-50 transition-all cursor-pointer flex items-center gap-2 text-xs font-semibold"
-      title="Open ICNA Sidebar">
+      title="Open ICNA Sidebar"
+    >
       <span class="material-symbols-outlined">menu</span>
       <span class="hidden sm:inline">Open Menu</span>
     </button>
   }
 
   <!-- Dedicated ICNA Auditor Sidebar -->
-  <aside 
-    [class.translate-x-0]="isSidebarOpen()" 
-    [class.-translate-x-full]="!isSidebarOpen()" 
-    class="flex flex-col fixed left-0 top-0 h-full w-72 bg-[var(--color-surface-container-low)] border-r border-[var(--color-outline-variant)]/20 rounded-r-[32px] shadow-md z-40 py-8 px-6 justify-between transition-transform duration-300 ease-in-out">
-    
+  <aside
+    [class.translate-x-0]="isSidebarOpen()"
+    [class.-translate-x-full]="!isSidebarOpen()"
+    class="flex flex-col fixed left-0 top-0 h-full w-72 bg-[var(--color-surface-container-low)] border-r border-[var(--color-outline-variant)]/20 rounded-r-[32px] shadow-md z-40 py-8 px-6 justify-between transition-transform duration-300 ease-in-out"
+  >
     <div>
       <!-- Profile / Brand Header with Close Button -->
       <div class="mb-8 flex flex-col items-center relative">
-        <button 
-          (click)="toggleSidebar()" 
+        <button
+          (click)="toggleSidebar()"
           class="absolute -right-2 -top-2 p-1.5 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
-          title="Close Sidebar">
+          title="Close Sidebar"
+        >
           <span class="material-symbols-outlined text-lg">chevron_left</span>
         </button>
 
-        <div class="w-16 h-16 rounded-full bg-white mb-3 overflow-hidden flex items-center justify-center border border-[var(--color-outline-variant)]/30 shadow-xs">
-          <img src="/assets/zgic_logo.webp" alt="ZGIC Logo" class="h-8 w-auto object-contain" onerror="this.onerror=null; this.src='/assets/zgic_logo.png';" />
+        <div
+          class="w-16 h-16 rounded-full bg-white mb-3 overflow-hidden flex items-center justify-center border border-[var(--color-outline-variant)]/30 shadow-xs"
+        >
+          <img
+            src="assets/zgic_logo.webp"
+            alt="ZGIC Logo"
+            class="h-8 w-auto object-contain"
+            onerror="
+              this.onerror = null;
+              this.src = 'assets/zgic_logo.png';
+            "
+          />
         </div>
-        <h2 class="text-lg font-extrabold text-[var(--color-primary)] leading-tight">ICNA Internal Audit</h2>
+        <h2 class="text-lg font-extrabold text-[var(--color-primary)] leading-tight">ICNA</h2>
       </div>
 
       <!-- Dedicated ICNA Navigation Links (No CFO Access) -->
       <nav class="space-y-2 text-xs font-semibold">
-        <a routerLink="/icna-dashboard" class="w-full px-4 py-3 rounded-full flex items-center gap-3 transition-all bg-[var(--color-primary-container)] text-white shadow-sm">
+        <a
+          routerLink="/icna-dashboard"
+          class="w-full px-4 py-3 rounded-full flex items-center gap-3 transition-all bg-[var(--color-primary-container)] text-white shadow-sm"
+        >
           <span class="material-symbols-outlined text-lg">verified_user</span>
           <span>Pending Audit Queue</span>
         </a>
@@ -45,82 +61,166 @@
     <!-- Bottom Actions -->
     <div class="space-y-4 pt-6 border-t border-[var(--color-outline-variant)]/20 text-xs">
       <div class="px-2 flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+        <!-- <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> -->
         <div>
-          <div class="font-bold text-[var(--color-on-surface)]">Oluwaseun Auditor</div>
-          <div class="text-[10px] text-gray-500 font-mono">ICNA Senior Officer</div>
+          <div class="font-bold text-[18px] text-[var(--color-on-surface)]">
+            {{ currentStaffName() }}
+          </div>
+          <div class="text-[14px] text-gray-500 font-mono">ICNA</div>
         </div>
       </div>
 
-      <a routerLink="/staff-login" class="w-full py-2.5 px-4 rounded-full bg-transparent hover:bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-all flex items-center gap-3 font-medium">
+      <button
+        type="button"
+        (click)="logout()"
+        class="w-full py-2.5 px-4 rounded-full bg-transparent hover:bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-all flex items-center gap-3 font-medium cursor-pointer"
+      >
         <span class="material-symbols-outlined text-lg">logout</span>
         <span>Logout Staff Portal</span>
-      </a>
+      </button>
     </div>
   </aside>
 
   <!-- Main Content Canvas -->
-  <main 
-    [class.md:ml-72]="isSidebarOpen()" 
-    [class.ml-0]="!isSidebarOpen()" 
-    class="flex-1 min-h-screen p-6 lg:p-10 space-y-8 transition-all duration-300">
-    
+  <main
+    [class.md:ml-72]="isSidebarOpen()"
+    [class.ml-0]="!isSidebarOpen()"
+    class="flex-1 min-h-screen p-6 lg:p-10 space-y-8 transition-all duration-300"
+  >
     <!-- Top Bar & Title -->
-    <div class="border-b border-[var(--color-outline-variant)]/20 pb-4 flex items-center justify-between">
+    <div
+      class="border-b border-[var(--color-outline-variant)]/20 pb-4 flex items-center justify-between"
+    >
       <div>
-        <h1 class="text-2xl font-bold text-[var(--color-on-surface)]">Pending Policy Commission Audit</h1>
+        <h1 class="text-2xl font-bold text-[var(--color-on-surface)]">
+          Pending Policy Commission Audit
+        </h1>
       </div>
 
-      <button 
-        (click)="toggleSidebar()" 
-        class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)] text-xs font-semibold transition-all cursor-pointer">
-        <span class="material-symbols-outlined text-base">{{ isSidebarOpen() ? 'dock_to_left' : 'menu' }}</span>
+      <button
+        (click)="toggleSidebar()"
+        class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)] text-xs font-semibold transition-all cursor-pointer"
+      >
+        <span class="material-symbols-outlined text-base">{{
+          isSidebarOpen() ? 'dock_to_left' : 'menu'
+        }}</span>
         <span>{{ isSidebarOpen() ? 'Collapse Menu' : 'Expand Menu' }}</span>
       </button>
     </div>
+
+    @if (isLoading()) {
+      <div
+        class="w-full p-3 rounded-2xl bg-blue-50 text-blue-700 text-xs font-semibold flex items-center justify-center gap-2 border border-blue-200 animate-fade-in"
+      >
+        <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        <span>Loading ICNA queue...</span>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div
+        class="w-full p-3 rounded-2xl bg-red-50 text-red-700 text-xs font-semibold flex items-center justify-center gap-2 border border-red-200 animate-fade-in"
+      >
+        <span class="material-symbols-outlined text-sm text-red-600">error</span>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    @if (infoMessage()) {
+      <div
+        class="w-full p-3 rounded-2xl bg-blue-50 text-blue-700 text-xs font-semibold flex items-center justify-center gap-2 border border-blue-200 animate-fade-in"
+      >
+        <span class="material-symbols-outlined text-sm">info</span>
+        <span>{{ infoMessage() }}</span>
+      </div>
+    }
 
     <!-- Metrics Cards: Pending Requests, Total Value (Naira), Active Brokers -->
     <div class="grid sm:grid-cols-3 gap-6">
       <!-- Card 1: How many pending -->
       <div class="card-executive space-y-1">
-        <span class="text-[11px] text-[var(--color-on-surface-variant)] uppercase font-semibold">Pending Requests</span>
+        <span class="text-[11px] text-[var(--color-on-surface-variant)] uppercase font-semibold"
+          >Pending Requests</span
+        >
         <div class="flex items-baseline justify-between">
-          <span class="text-3xl font-bold text-[var(--color-on-surface)]">10 Requests</span>
+          <span class="text-3xl font-bold text-[var(--color-on-surface)]"
+            >{{ pendingRequestCount() }} Requests</span
+          >
         </div>
         <p class="text-[11px] text-[var(--color-on-surface-variant)]">Awaiting ICNA Sign-off</p>
       </div>
 
       <!-- Card 2: Value in Naira -->
       <div class="card-executive space-y-1">
-        <span class="text-[11px] text-[var(--color-on-surface-variant)] uppercase font-semibold">Total Pending Value</span>
+        <span class="text-[11px] text-[var(--color-on-surface-variant)] uppercase font-semibold"
+          >Total Pending Value</span
+        >
         <div class="flex items-baseline justify-between">
-          <span class="text-3xl font-bold text-emerald-800 font-mono">₦56,950,000</span>
-          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full">NGN Currency</span>
+          <span class="text-3xl font-bold text-emerald-800 font-mono"
+            >₦{{ pendingTotalValue() }}</span
+          >
+          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full"
+            >NGN Currency</span
+          >
         </div>
-        <!-- <p class="text-[11px] text-[var(--color-on-surface-variant)]">High Value (&gt;₦5M): ₦44,310,000</p> -->
       </div>
 
       <!-- Card 3: How many brokers -->
       <div class="card-executive space-y-1">
-        <span class="text-[11px] text-[var(--color-on-surface-variant)] uppercase font-semibold">Broker Agencies</span>
+        <span class="text-[11px] text-[var(--color-on-surface-variant)] uppercase font-semibold"
+          >Broker Agencies</span
+        >
         <div class="flex items-baseline justify-between">
-          <span class="text-3xl font-bold text-[var(--color-on-surface)]">5 Brokers</span>
-          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full">NAICOM Verified</span>
+          <span class="text-3xl font-bold text-[var(--color-on-surface)]"
+            >{{ brokerCount() }} Brokers</span
+          >
+          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full"
+            >NAICOM Verified</span
+          >
         </div>
-        <p class="text-[11px] text-[var(--color-on-surface-variant)]">Participating in Current Queue</p>
+        <p class="text-[11px] text-[var(--color-on-surface-variant)]">In Current Queue</p>
       </div>
     </div>
 
     <!-- Pending Commissions Table Card -->
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-[var(--color-outline-variant)]/20 space-y-4">
-      
+    <div
+      class="bg-white rounded-3xl p-6 shadow-sm border border-[var(--color-outline-variant)]/20 space-y-4"
+    >
       <!-- Card Toolbar Header with Search & Batch Select Button -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
-        <h2 class="text-lg font-bold text-[var(--color-on-surface)]">Pending Commission Requests</h2>
-        
+      <div
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-4"
+      >
+        <h2 class="text-lg font-bold text-[var(--color-on-surface)]">
+          Pending Commission Requests
+        </h2>
+
         <div class="flex items-center gap-3">
-          <input type="text" [(ngModel)]="searchQuery" (input)="currentPage.set(1)" placeholder="Filter by policy number or broker..." class="input-executive text-xs py-2 px-4 w-64 rounded-full border border-[var(--color-outline-variant)]/30 bg-white" />
-          <button (click)="onBatchApprove()" [disabled]="selectedCount() === 0" class="px-4 py-2 rounded-2xl bg-[var(--color-primary-container)] text-white text-xs font-semibold hover:bg-[var(--color-primary)] transition-all shadow-xs flex items-center gap-1.5 disabled:opacity-40 cursor-pointer">
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (input)="currentPage.set(1)"
+            placeholder="Filter by policy number or broker..."
+            class="input-executive text-xs py-2 px-4 w-64 rounded-full border border-[var(--color-outline-variant)]/30 bg-white"
+          />
+          <button
+            (click)="onBatchApprove()"
+            [disabled]="selectedCount() === 0"
+            class="px-4 py-2 rounded-2xl bg-[var(--color-primary-container)] text-white text-xs font-semibold hover:bg-[var(--color-primary)] transition-all shadow-xs flex items-center gap-1.5 disabled:opacity-40 cursor-pointer"
+          >
             <span class="material-symbols-outlined text-sm">verified_user</span>
             <span>Batch Verify Selected ({{ selectedCount() }})</span>
           </button>
@@ -130,9 +230,15 @@
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="border-b border-[var(--color-outline-variant)]/20 text-[11px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider">
+            <tr
+              class="border-b border-[var(--color-outline-variant)]/20 text-[11px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider"
+            >
               <th class="py-3 px-3 w-10">
-                <input type="checkbox" (change)="toggleSelectAll($event)" class="rounded text-[var(--color-primary-container)] focus:ring-0" />
+                <input
+                  type="checkbox"
+                  (change)="toggleSelectAll($event)"
+                  class="rounded text-[var(--color-primary-container)] focus:ring-0"
+                />
               </th>
               <th class="py-3 px-4">Temporary Policy Ref & Client</th>
               <th class="py-3 px-4">Broker Agency</th>
@@ -144,23 +250,45 @@
             @for (claim of paginatedClaims(); track claim.id) {
               <tr class="hover:bg-[var(--color-surface-container-low)] transition-colors">
                 <td class="py-4 px-3">
-                  <input type="checkbox" [(ngModel)]="claim.selected" class="rounded text-[var(--color-primary-container)] focus:ring-0" />
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="claim.selected"
+                    class="rounded text-[var(--color-primary-container)] focus:ring-0"
+                  />
                 </td>
                 <td class="py-4 px-4 font-bold text-[var(--color-on-surface)]">
                   <div class="font-mono text-sm">{{ claim.policyNumber }}</div>
-                  <div class="text-[11px] font-normal text-gray-500 font-sans mt-0.5">{{ claim.clientName }}</div>
+                  <div class="text-[11px] font-normal text-gray-500 font-sans mt-0.5">
+                    {{ claim.clientName }}
+                  </div>
                 </td>
                 <td class="py-4 px-4">
-                  <div class="font-medium text-[var(--color-on-surface)]">{{ claim.brokerName }}</div>
+                  <div class="font-medium text-[var(--color-on-surface)]">
+                    {{ claim.brokerName }}
+                  </div>
                   <div class="text-[10px] text-gray-400 font-mono">{{ claim.brokerId }}</div>
                 </td>
                 <td class="py-4 px-4 font-mono font-bold text-emerald-700 text-sm">
                   ₦{{ claim.amount }}
                 </td>
                 <td class="py-4 px-4 text-right">
-                  <button (click)="openReviewModal(claim)" class="px-3.5 py-1.5 rounded-xl bg-[var(--color-primary-container)] text-white text-[11px] font-semibold hover:bg-[var(--color-primary)] transition-all cursor-pointer">
+                  <button
+                    (click)="openReviewModal(claim)"
+                    class="px-3.5 py-1.5 rounded-xl bg-[var(--color-primary-container)] text-white text-[11px] font-semibold hover:bg-[var(--color-primary)] transition-all cursor-pointer"
+                  >
                     View Details
                   </button>
+                </td>
+              </tr>
+            }
+
+            @if (!isLoading() && !errorMessage() && paginatedClaims().length === 0) {
+              <tr>
+                <td
+                  colspan="5"
+                  class="py-8 text-center text-xs text-[var(--color-on-surface-variant)]"
+                >
+                  No records currently in queue.
                 </td>
               </tr>
             }
@@ -169,40 +297,45 @@
       </div>
 
       <!-- Pagination Footer Controls -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100 text-xs text-[var(--color-on-surface-variant)]">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100 text-xs text-[var(--color-on-surface-variant)]"
+      >
         <div>
-          Showing <strong>{{ (currentPage() - 1) * pageSize + 1 }}</strong> to <strong>{{ Math.min(currentPage() * pageSize, filteredClaims().length) }}</strong> of <strong>{{ filteredClaims().length }}</strong> entries
+          Showing <strong>{{ (currentPage() - 1) * pageSize + 1 }}</strong> to
+          <strong>{{ Math.min(currentPage() * pageSize, filteredClaims().length) }}</strong> of
+          <strong>{{ filteredClaims().length }}</strong> entries
         </div>
 
         <div class="flex items-center gap-1.5">
-          <button 
-            (click)="goToPage(currentPage() - 1)" 
-            [disabled]="currentPage() === 1" 
-            class="px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] font-semibold disabled:opacity-40 hover:bg-[var(--color-surface-container-high)] transition-all cursor-pointer">
+          <button
+            (click)="goToPage(currentPage() - 1)"
+            [disabled]="currentPage() === 1"
+            class="px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] font-semibold disabled:opacity-40 hover:bg-[var(--color-surface-container-high)] transition-all cursor-pointer"
+          >
             ← Previous
           </button>
 
           @for (page of pageNumbers(); track page) {
-            <button 
-              (click)="goToPage(page)" 
-              [class.bg-[var(--color-primary-container)]]="currentPage() === page" 
-              [class.text-white]="currentPage() === page" 
-              [class.font-bold]="currentPage() === page" 
-              class="w-7 h-7 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] transition-all flex items-center justify-center cursor-pointer">
+            <button
+              (click)="goToPage(page)"
+              [class.bg-[var(--color-primary-container)]]="currentPage() === page"
+              [class.text-white]="currentPage() === page"
+              [class.font-bold]="currentPage() === page"
+              class="w-7 h-7 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] transition-all flex items-center justify-center cursor-pointer"
+            >
               {{ page }}
             </button>
           }
 
-          <button 
-            (click)="goToPage(currentPage() + 1)" 
-            [disabled]="currentPage() === totalPages()" 
-            class="px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] font-semibold disabled:opacity-40 hover:bg-[var(--color-surface-container-high)] transition-all cursor-pointer">
+          <button
+            (click)="goToPage(currentPage() + 1)"
+            [disabled]="currentPage() === totalPages()"
+            class="px-3 py-1.5 rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)] font-semibold disabled:opacity-40 hover:bg-[var(--color-surface-container-high)] transition-all cursor-pointer"
+          >
             Next →
           </button>
         </div>
       </div>
-
     </div>
-
   </main>
 </div>
